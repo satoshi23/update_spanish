@@ -22,7 +22,6 @@ function c5230799.initial_effect(c)
 	e0:SetOperation(aux.chainreg)
 	c:RegisterEffect(e0)
 	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(5230799,0))
 	e3:SetCategory(CATEGORY_DRAW)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_CHAIN_SOLVING)
@@ -37,8 +36,17 @@ function c5230799.initial_effect(c)
 end
 function c5230799.drcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	local rc=re:GetHandler()
 	if not re:IsHasType(EFFECT_TYPE_ACTIVATE) or c:GetFlagEffect(1)<=0 then return false end
-	return c:GetColumnGroup():IsContains(re:GetHandler())
+	local p,loc,seq=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_CONTROLER,CHAININFO_TRIGGERING_LOCATION,CHAININFO_TRIGGERING_SEQUENCE)
+	if bit.band(loc,LOCATION_SZONE)==0 or rc:IsControler(1-p) then
+		if rc:IsLocation(LOCATION_SZONE) and rc:IsControler(p) then
+			seq=rc:GetSequence()
+		else
+			seq=rc:GetPreviousSequence()
+		end
+	end
+	return c:IsColumn(seq,p,LOCATION_SZONE)
 end
 function c5230799.cfilter(c)
 	return c:IsSetCard(0x108) and c:IsDiscardable()
@@ -55,5 +63,5 @@ function c5230799.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c5230799.drop(e,tp,eg,ep,ev,re,r,rp)
 	local p,d=Duel.GetChainInfo(0,CHAININFO_TARGET_PLAYER,CHAININFO_TARGET_PARAM)
-	Duel.Draw(p,d,REASON_EFFECT)
+	Duel.Draw(p,d,REASON_EFFECT)	
 end

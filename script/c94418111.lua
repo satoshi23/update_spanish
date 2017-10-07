@@ -35,15 +35,24 @@ function c94418111.initial_effect(c)
 end
 function c94418111.tdcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	local rc=re:GetHandler()
 	if not re:IsHasType(EFFECT_TYPE_ACTIVATE) or c:GetFlagEffect(1)<=0 then return false end
-	return c:GetColumnGroup():IsContains(re:GetHandler())
+	local p,loc,seq=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_CONTROLER,CHAININFO_TRIGGERING_LOCATION,CHAININFO_TRIGGERING_SEQUENCE)
+	if bit.band(loc,LOCATION_SZONE)==0 or rc:IsControler(1-p) then
+		if rc:IsLocation(LOCATION_SZONE) and rc:IsControler(p) then
+			seq=rc:GetSequence()
+		else
+			seq=rc:GetPreviousSequence()
+		end
+	end
+	return c:IsColumn(seq,p,LOCATION_SZONE)
 end
 function c94418111.filter(c)
 	return c:IsSetCard(0x108) and c:IsAbleToDeck()
 end
 function c94418111.tdtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_GRAVE) and chkc:IsControler(tp) and c94418111.filter(chkc) end
-	if chk==0 then return Duel.IsPlayerCanDraw(tp,1)
+	if chk==0 then return Duel.IsPlayerCanDraw(tp,1) 
 		and Duel.IsExistingTarget(c94418111.filter,tp,LOCATION_GRAVE,0,3,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TODECK)
 	local g=Duel.SelectTarget(tp,c94418111.filter,tp,LOCATION_GRAVE,0,3,3,nil)

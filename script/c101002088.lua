@@ -46,7 +46,8 @@ function c101002088.lvcon(e)
 	return ph==PHASE_MAIN1 or ph==PHASE_MAIN2
 end
 function c101002088.cfilter(c,tp)
-	return c:GetPreviousControler()==tp and c:IsPreviousSetCard(0x107)
+	local rc=c:GetReasonCard()
+	return c:IsReason(REASON_BATTLE) and c:GetPreviousControler()==tp and c:IsPreviousSetCard(0x107)
 end
 function c101002088.descon(e,tp,eg,ep,ev,re,r,rp)
 	return eg:IsExists(c101002088.cfilter,1,nil,tp)

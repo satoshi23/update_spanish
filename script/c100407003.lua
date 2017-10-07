@@ -3,7 +3,7 @@
 function c100407003.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
-	aux.AddFusionProcCodeFun(c,64631466,aux.FilterBoolFunction(Card.IsFusionType,TYPE_EFFECT),1,true,true)
+	aux.AddFusionProcMix(c,true,true,64631466,aux.FilterBoolFunctionEx(Card.IsType,TYPE_EFFECT))
 	--Equip
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(100407003,0))
@@ -17,6 +17,7 @@ function c100407003.initial_effect(c)
 	e1:SetTarget(c100407003.eqtg)
 	e1:SetOperation(c100407003.eqop)
 	c:RegisterEffect(e1)
+	aux.AddEREquipLimit(c,nil,c100407003.eqval,c100407003.equipop,e1)
 	--atk
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
@@ -35,7 +36,7 @@ function c100407003.initial_effect(c)
 	e4:SetType(EFFECT_TYPE_FIELD)
 	e4:SetCode(EFFECT_DISABLE)
 	e4:SetRange(LOCATION_MZONE)
-	e4:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	e4:SetTargetRange(0x7f,0x7f)
 	e4:SetTarget(c100407003.distg)
 	c:RegisterEffect(e4)
 	--atk limit
@@ -43,12 +44,12 @@ function c100407003.initial_effect(c)
 	e5:SetType(EFFECT_TYPE_FIELD)
 	e5:SetCode(EFFECT_CANNOT_ATTACK)
 	e5:SetRange(LOCATION_MZONE)
-	e5:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
+	e5:SetTargetRange(0x7f,0x7f)
 	e5:SetTarget(c100407003.distg)
 	c:RegisterEffect(e5)
 end
-function c100407003.CanEquipMonster(c)
-	return true
+function c100407003.eqval(ec,c,tp)
+	return ec:IsControler(1-tp) and ec:IsType(TYPE_EFFECT)
 end
 function c100407003.eqcon(e,tp,eg,ep,ev,re,r,rp,chk)
 	return ep~=tp and re:IsActiveType(TYPE_MONSTER)
@@ -64,27 +65,15 @@ function c100407003.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local g=Duel.SelectTarget(tp,c100407003.eqfilter,tp,0,LOCATION_MZONE+LOCATION_GRAVE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_EQUIP,g,1,0,0)
 end
-function c100407003.eqlimit(e,c)
-	return e:GetOwner()==c
-end
-function c100407003.EquipMonster(c,tp,tc)
-	if not Duel.Equip(tp,tc,c,false) then return end
-	--Add Equip limit
-	tc:RegisterFlagEffect(100407003,RESET_EVENT+0x1fe0000,0,0)
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetProperty(EFFECT_FLAG_OWNER_RELATE)
-	e1:SetCode(EFFECT_EQUIP_LIMIT)
-	e1:SetReset(RESET_EVENT+0x1fe0000)
-	e1:SetValue(c100407003.eqlimit)
-	tc:RegisterEffect(e1)
+function c100407003.equipop(c,e,tp,tc)
+	aux.EquipByEffectAndLimitRegister(c,e,tp,tc,100407003)
 end
 function c100407003.eqop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc:IsFaceup() and tc:IsRelateToEffect(e) and tc:IsType(TYPE_MONSTER) and tc:IsControler(1-tp) then
+	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) and tc:IsType(TYPE_MONSTER) and tc:IsControler(1-tp) then
 		if c:IsFaceup() and c:IsRelateToEffect(e) then
-			c100407003.EquipMonster(c,tp,tc)
+			c100407003.equipop(c,e,tp,tc)
 		else Duel.SendtoGrave(tc,REASON_EFFECT) end
 	end
 end

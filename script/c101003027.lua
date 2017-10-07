@@ -53,6 +53,7 @@ function c101003027.initial_effect(c)
 	e5:SetOperation(c101003027.rmop)
 	c:RegisterEffect(e5)
 end
+c101003027.spell_counter_permit=99
 function c101003027.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.CheckLocation(tp,LOCATION_PZONE,0) or Duel.CheckLocation(tp,LOCATION_PZONE,1)
 end
@@ -109,7 +110,7 @@ function c101003027.rmop(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
 		e1:SetValue(atk)
-		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END+RESET_OPPO_TURN)
+		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		c:RegisterEffect(e1)
 	end
 end

@@ -2,15 +2,8 @@
 --Odd-Eyes Revolution Dragon
 --Scripted by Eerie Code
 function c16306932.initial_effect(c)
+	c:EnableReviveLimit()
 	aux.EnablePendulumAttribute(c)
-	--revive limit
-	c:EnableUnsummonable()
-	local e0=Effect.CreateEffect(c)
-	e0:SetType(EFFECT_TYPE_SINGLE)
-	e0:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	e0:SetCode(EFFECT_REVIVE_LIMIT)
-	e0:SetCondition(c16306932.rvlimit)
-	c:RegisterEffect(e0)
 	--splimit
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD)
@@ -78,9 +71,6 @@ function c16306932.initial_effect(c)
 	e8:SetOperation(c16306932.tdop)
 	c:RegisterEffect(e8)
 end
-function c16306932.rvlimit(e)
-	return not e:GetHandler():IsLocation(LOCATION_HAND)
-end
 function c16306932.psplimit(e,c,tp,sumtp,sumpos)
 	return not c:IsRace(RACE_DRAGON) and bit.band(sumtp,SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
@@ -103,7 +93,7 @@ function c16306932.spop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c16306932.splimit(e,se,sp,st)
-	return bit.band(st,SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM and e:GetHandler():IsLocation(LOCATION_HAND)
+	return bit.band(st,SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM and not e:GetHandler():IsLocation(LOCATION_HAND)
 end
 function c16306932.hspfilter1(c,g,ft)
 	local rg=Group.FromCards(c)

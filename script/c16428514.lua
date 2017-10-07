@@ -71,8 +71,10 @@ end
 function c16428514.setop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if c:IsFaceup() and c:IsRelateToEffect(e) and tc:IsFaceup() and tc:IsRelateToEffect(e) then
-		local g=Group.FromCards(c,tc)
+	local g=Group.CreateGroup()
+	if c:IsFaceup() and c:IsRelateToEffect(e) then g:AddCard(c) end
+	if tc:IsFaceup() and tc:IsRelateToEffect(e) then g:AddCard(tc) end
+	if g:GetCount()>0 then
 		Duel.ChangePosition(g,POS_FACEDOWN_DEFENSE)
 	end
 end

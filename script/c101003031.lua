@@ -27,20 +27,22 @@ end
 function c101003031.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) and Duel.Remove(tc,0,REASON_EFFECT+REASON_TEMPORARY)~=0 then
-		tc:RegisterFlagEffect(101003031,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,1)
+		local ct=2
+		tc:RegisterFlagEffect(101003031,RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END,0,ct)
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 		e1:SetCode(EVENT_PHASE+PHASE_END)
-		e1:SetReset(RESET_PHASE+PHASE_END)
+		e1:SetReset(RESET_PHASE+PHASE_END,ct)
 		e1:SetLabelObject(tc)
 		e1:SetCountLimit(1)
 		e1:SetCondition(c101003031.retcon)
 		e1:SetOperation(c101003031.retop)
+		e1:SetLabel(Duel.GetTurnCount())
 		Duel.RegisterEffect(e1,tp)
 	end
 end
 function c101003031.retcon(e,tp,eg,ep,ev,re,r,rp)
-	return e:GetLabelObject():GetFlagEffect(101003031)~=0
+	return Duel.GetTurnCount()>e:GetLabel() and e:GetLabelObject():GetFlagEffect(101003031)~=0
 end
 function c101003031.retop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.ReturnToField(e:GetLabelObject())

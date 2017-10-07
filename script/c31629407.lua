@@ -22,7 +22,6 @@ function c31629407.initial_effect(c)
 	e0:SetOperation(aux.chainreg)
 	c:RegisterEffect(e0)
 	local e3=Effect.CreateEffect(c)
-	e3:SetDescription(aux.Stringid(31629407,0))
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e3:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_TRIGGER_O)
 	e3:SetCode(EVENT_CHAIN_SOLVING)
@@ -36,8 +35,17 @@ function c31629407.initial_effect(c)
 end
 function c31629407.spcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
+	local rc=re:GetHandler()
 	if not re:IsHasType(EFFECT_TYPE_ACTIVATE) or c:GetFlagEffect(1)<=0 then return false end
-	return c:GetColumnGroup():IsContains(re:GetHandler())
+	local p,loc,seq=Duel.GetChainInfo(ev,CHAININFO_TRIGGERING_CONTROLER,CHAININFO_TRIGGERING_LOCATION,CHAININFO_TRIGGERING_SEQUENCE)
+	if bit.band(loc,LOCATION_SZONE)==0 or rc:IsControler(1-p) then
+		if rc:IsLocation(LOCATION_SZONE) and rc:IsControler(p) then
+			seq=rc:GetSequence()
+		else
+			seq=rc:GetPreviousSequence()
+		end
+	end
+	return c:IsColumn(seq,p,LOCATION_SZONE)
 end
 function c31629407.spfilter(c,e,tp)
 	return c:IsLevelBelow(4) and c:IsSetCard(0x108) and not c:IsCode(31629407) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)

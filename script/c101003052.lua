@@ -14,7 +14,7 @@ function c101003052.initial_effect(c)
 	e2:SetRange(LOCATION_FZONE)
 	e2:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
 	e2:SetTarget(aux.TargetBoolFunction(Card.IsRace,RACE_DRAGON))
-	e2:SetValue(300)
+	e2:SetValue(500)
 	c:RegisterEffect(e2)
 	--cannot link summon
 	local e3=Effect.CreateEffect(c)
@@ -67,7 +67,7 @@ function c101003052.initial_effect(c)
 	e8:SetRange(LOCATION_FZONE)
 	e8:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
 	e8:SetCondition(c101003052.limcon)
-	e8:SetTarget(aux.TargetBoolFunction(Card.IsRace,RACE_CYBERSE))
+	e8:SetTarget(aux.TargetBoolFunction(Card.IsRace,RACE_CYBERS))
 	e8:SetValue(1)
 	c:RegisterEffect(e8)
 end
@@ -76,19 +76,18 @@ function c101003052.limfilter(c)
 end
 function c101003052.splimit(e,c,tp,sumtp,sumpos)
 	local g=Duel.GetMatchingGroup(c101003052.limfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)
-	if g:GetCount()<=0 then return false end
 	local mg,lk=g:GetMinGroup(Card.GetLink)
-	return lk>c:GetLink() and bit.band(sumtp,SUMMON_TYPE_LINK)==SUMMON_TYPE_LINK
+	return bit.band(sumtp,SUMMON_TYPE_LINK)==SUMMON_TYPE_LINK and lk and lk>c:GetLink()
 end
 function c101003052.atktg(e,c)
 	return not c:IsType(TYPE_LINK)
 end
 function c101003052.cfilter(c)
-	return c:IsFaceup() and c:IsRace(RACE_CYBERSE) and c:IsType(TYPE_LINK)
+	return c:IsFaceup() and c:IsType(RACE_CYBERS)
 end
 function c101003052.discon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.GetMatchingGroupCount(c101003052.cfilter,tp,LOCATION_MZONE,LOCATION_MZONE,nil)>1
-		and re:IsActiveType(TYPE_MONSTER) and re:GetHandler():IsRace(RACE_CYBERSE)
+		and re:IsActiveType(TYPE_MONSTER) and re:GetHandler():IsRace(RACE_CYBERS)
 end
 function c101003052.disop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.NegateEffect(ev)
@@ -97,5 +96,5 @@ function c101003052.limcon(e)
 	return Duel.GetMatchingGroupCount(c101003052.cfilter,e:GetHandler():GetControler(),LOCATION_MZONE,LOCATION_MZONE,nil)>1
 end
 function c101003052.atlimit(e,c)
-	return c:IsFaceup() and c:IsRace(RACE_CYBERSE)
+	return c:IsFaceup() and c:IsType(RACE_CYBERS)
 end

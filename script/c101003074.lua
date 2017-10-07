@@ -54,12 +54,12 @@ function c101003074.activate(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c101003074.filter1(c,e,tp)
-	return c:IsFaceup() and c:IsType(TYPE_XYZ) and c:IsSetCard(0x8d)
+	return c:IsFaceup() and c:IsSetCard(0x8d)
 		and Duel.IsExistingMatchingCard(c101003074.filter2,tp,LOCATION_EXTRA,0,1,nil,e,tp,c,c:GetCode())
 		and Duel.GetLocationCountFromEx(tp,tp,c)>0
 end
 function c101003074.filter2(c,e,tp,mc,code)
-	return c:IsType(TYPE_XYZ) and c:IsSetCard(0x8d) and not c:IsCode(code) and mc:IsCanBeXyzMaterial(c)
+	return mc:IsType(TYPE_XYZ,c,SUMMON_TYPE_XYZ,tp) and c:IsType(TYPE_XYZ) and c:IsSetCard(0x8d) and not c:IsCode(code) and mc:IsCanBeXyzMaterial(c,tp)
 		and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_XYZ,tp,false,false)
 end
 function c101003074.sptg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)

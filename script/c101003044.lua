@@ -3,7 +3,7 @@
 --Scripted by Larry126
 function c101003044.initial_effect(c)
 	--link summon
-	aux.AddLinkProcedure(c,aux.NOT(aux.FilterBoolFunction(Card.IsType,TYPE_TOKEN)),2)
+	aux.AddLinkProcedure(c,aux.NOT(aux.FilterBoolFunctionEx(Card.IsType,TYPE_TOKEN)),2)
 	c:EnableReviveLimit()
 	--Negate
 	local e1=Effect.CreateEffect(c)
@@ -66,7 +66,7 @@ function c101003044.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Release(e:GetHandler(),REASON_COST)
 end
 function c101003044.spfilter1(c,e,tp)
-	return c:IsType(TYPE_LINK) and c:IsLinkBelow(2) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
+	return c:IsType(TYPE_LINK) and c:GetLink()<=2 and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c101003044.spfilter2(c,e,tp)
 	return c:IsRace(RACE_DRAGON) and c:IsLevelBelow(4) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)

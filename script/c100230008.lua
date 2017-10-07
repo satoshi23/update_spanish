@@ -1,10 +1,10 @@
 --沼地のドロゴン
-
+--Mudragon of the Swamp
 --Script by nekrozar
 function c100230008.initial_effect(c)
 	--fusion material
 	c:EnableReviveLimit()
-	aux.AddFusionProcFunRep(c,c100230008.ffilter,2,true)
+	aux.AddFusionProcMixN(c,true,true,c100230008.ffilter,2)
 	--cannot be target
 	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_SINGLE)

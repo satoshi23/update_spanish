@@ -13,6 +13,7 @@ function c64631466.initial_effect(c)
 	e1:SetTarget(c64631466.eqtg)
 	e1:SetOperation(c64631466.eqop)
 	c:RegisterEffect(e1)
+	aux.AddEREquipLimit(c,c64631466.eqcon,function(ec,_,tp) return ec:IsControler(1-tp) end,c64631466.equipop,e1)
 	--atk/def
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE)
@@ -41,15 +42,11 @@ function c64631466.initial_effect(c)
 	c:RegisterEffect(e4)
 end
 function c64631466.eqcon(e,tp,eg,ep,ev,re,r,rp)
-	local c=e:GetHandler()
-	return c64631466.CanEquipMonster(c)
+	local g=e:GetHandler():GetEquipGroup():Filter(c64631466.eqfilter,nil)
+	return g:GetCount()==0
 end
 function c64631466.eqfilter(c)
 	return c:GetFlagEffect(64631466)~=0 
-end
-function c64631466.CanEquipMonster(c)
-	local g=c:GetEquipGroup():Filter(c64631466.eqfilter,nil)
-	return g:GetCount()==0
 end
 function c64631466.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(1-tp) and chkc:IsAbleToChangeControler() end
@@ -59,21 +56,8 @@ function c64631466.eqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local g=Duel.SelectTarget(tp,Card.IsAbleToChangeControler,tp,0,LOCATION_MZONE,1,1,nil)
 	Duel.SetOperationInfo(0,CATEGORY_EQUIP,g,1,0,0)
 end
-function c64631466.eqlimit(e,c)
-	return e:GetOwner()==c
-end
-function c64631466.EquipMonster(c,tp,tc)
-	if not Duel.Equip(tp,tc,c,false) then return end
-	--Add Equip limit
-	tc:RegisterFlagEffect(64631466,RESET_EVENT+0x1fe0000,0,0)
-	-- e:SetLabelObject(tc)
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetProperty(EFFECT_FLAG_OWNER_RELATE)
-	e1:SetCode(EFFECT_EQUIP_LIMIT)
-	e1:SetReset(RESET_EVENT+0x1fe0000)
-	e1:SetValue(c64631466.eqlimit)
-	tc:RegisterEffect(e1)
+function c64631466.equipop(c,e,tp,tc)
+	if not aux.EquipByEffectAndLimitRegister(c,e,tp,tc,64631466) then return end
 	--substitute
 	local e2=Effect.CreateEffect(c)
  	e2:SetType(EFFECT_TYPE_EQUIP)
@@ -86,9 +70,9 @@ end
 function c64631466.eqop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) and tc:IsType(TYPE_MONSTER) and tc:IsControler(1-tp) then
+	if tc and tc:IsRelateToEffect(e) and tc:IsType(TYPE_MONSTER) and tc:IsControler(1-tp) then
 		if c:IsFaceup() and c:IsRelateToEffect(e) then
-			c64631466.EquipMonster(c,tp,tc)
+			c64631466.equipop(c,e,tp,tc)
 		else Duel.SendtoGrave(tc,REASON_EFFECT) end
 	end
 end

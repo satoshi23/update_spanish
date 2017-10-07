@@ -1,8 +1,8 @@
---白闘気双頭神龍
+--白闘気双頭神龍 
 --White Aura Biphamet
 function c89907227.initial_effect(c)
 	--synchro summon
-	aux.AddSynchroProcedure(c,aux.FilterBoolFunction(Card.IsType,TYPE_SYNCHRO),aux.NonTuner(nil),1)
+	aux.AddSynchroProcedure(c,aux.FilterBoolFunctionEx(Card.IsType,TYPE_SYNCHRO),1,1,aux.NonTuner(nil),1,99)
 	c:EnableReviveLimit()
 	--special summon
 	local e1=Effect.CreateEffect(c)
@@ -32,6 +32,7 @@ function c89907227.initial_effect(c)
 	e3:SetDescription(aux.Stringid(89907227,2))
 	e3:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e3:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
+	e3:SetProperty(EFFECT_FLAG_DAMAGE_STEP)
 	e3:SetCode(EVENT_TO_GRAVE)
 	e3:SetCondition(c89907227.spcon)
 	e3:SetTarget(c89907227.sptg)
@@ -39,7 +40,7 @@ function c89907227.initial_effect(c)
 	c:RegisterEffect(e3)
 end
 function c89907227.tkcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnPlayer()==tp and e:GetHandler():IsSummonType(SUMMON_TYPE_SYNCHRO)
+	return Duel.GetTurnPlayer()==tp and c:IsSummonType(SUMMON_TYPE_SYNCHRO)
 end
 function c89907227.tktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
@@ -66,7 +67,7 @@ function c89907227.tkop2(e,tp,eg,ep,ev,re,r,rp)
 end
 function c89907227.spcon(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	return c:IsReason(REASON_DESTROY) and rp~=tp and c:IsReason(REASON_EFFECT)
+	return c:IsReason(REASON_DESTROY) and rp~=tp and c:IsReason(REASON_EFFECT) 
 		and c:IsPreviousLocation(LOCATION_MZONE) and c:GetPreviousControler()==tp
 end
 function c89907227.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -77,6 +78,6 @@ function c89907227.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c89907227.spop(e,tp,eg,ep,ev,re,r,rp)
 	if e:GetHandler():IsRelateToEffect(e) then
-		Duel.SpecialSummon(e:GetHandler(),0,tp,tp,false,false,POS_FACEUP_DEFENSE)
+		Duel.SpecialSummon(e:GetHandler(),0,tp,tp,false,false,POS_FACEUP)
 	end
 end

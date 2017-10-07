@@ -1,36 +1,19 @@
 --影六武衆－リハン
 --Shadow Six Samurai – Rihan
---Scripted by Eerie Code
---Fusion procedure by edo9300
 function c33964637.initial_effect(c)
-	c:EnableReviveLimit()
-	aux.AddFusionProcFunRep(c,c33964637.ffilter,3,true)
-	--spsummon condition
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_SPSUMMON_CONDITION)
-	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
-	e1:SetValue(c33964637.splimit)
-	c:RegisterEffect(e1)
-	--special summon rule
-	local e2=Effect.CreateEffect(c)
-	e2:SetType(EFFECT_TYPE_FIELD)
-	e2:SetCode(EFFECT_SPSUMMON_PROC)
-	e2:SetProperty(EFFECT_FLAG_UNCOPYABLE)
-	e2:SetRange(LOCATION_EXTRA)
-	e2:SetCondition(c33964637.sprcon)
-	e2:SetOperation(c33964637.sprop)
-	c:RegisterEffect(e2)
+	--Fusion procedure
+	aux.AddFusionProcMixN(c,true,true,c33964637.ffilter,3)
+	aux.AddContactFusion(c,c33964637.contactfil,c33964637.contactop,c33964637.splimit)
 	--fusion limit
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_SINGLE)
 	e3:SetCode(EFFECT_CANNOT_BE_FUSION_MATERIAL)
-	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE)
 	e3:SetValue(1)
 	c:RegisterEffect(e3)
 	--remove
 	local e4=Effect.CreateEffect(c)
-	e4:SetDescription(aux.Stringid(33964637,0))
+	e4:SetDescription(aux.Stringid(100419006,0))
 	e4:SetCategory(CATEGORY_REMOVE)
 	e4:SetType(EFFECT_TYPE_IGNITION)
 	e4:SetProperty(EFFECT_FLAG_CARD_TARGET)
@@ -39,7 +22,7 @@ function c33964637.initial_effect(c)
 	e4:SetCost(c33964637.rmcost)
 	e4:SetTarget(c33964637.rmtg)
 	e4:SetOperation(c33964637.rmop)
-	c:RegisterEffect(e4)
+	c:RegisterEffect(e4)	
 	--destroy replace
 	local e5=Effect.CreateEffect(c)
 	e5:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
@@ -50,54 +33,34 @@ function c33964637.initial_effect(c)
 	e5:SetOperation(c33964637.repop)
 	c:RegisterEffect(e5)
 end
+c33964637.material_setcode=0x3d
+function c33964637.ffilter(c,fc,sumtype,tp,sub,mg,sg)
+	return c:IsFusionSetCard(0x3d) and c:GetAttribute(fc,sumtype,tp)~=0 and (not sg or not sg:IsExists(c33964637.fusfilter,1,c,c:GetAttribute(fc,sumtype,tp),fc,sumtype,tp))
+end
+function c33964637.contactfil(tp)
+	return Duel.GetMatchingGroup(Card.IsAbleToGraveAsCost,tp,LOCATION_ONFIELD,0,nil)
+end
+function c33964637.contactop(g)
+	Duel.SendtoGrave(g,REASON_COST+REASON_MATERIAL)
+end
+function c33964637.fusfilter(c,attr,fc,sumtype,tp)
+	return c:IsAttribute(attr,fc,sumtype,tp) and not c:IsHasEffect(511002961)
+end
 function c33964637.splimit(e,se,sp,st)
-	return not e:GetHandler():IsLocation(LOCATION_EXTRA)
+	return e:GetHandler():GetLocation()~=LOCATION_EXTRA
 end
-function c33964637.ffilter(c,fc,sub,mg,sg)
-	return c:IsFusionSetCard(0x3d) and (not sg or not sg:IsExists(Card.IsFusionAttribute,1,c,c:GetFusionAttribute()))
-end
-function c33964637.sprcon(e,c)
-	if c==nil then return true end
-	local tp=c:GetControler()
-	return Duel.IsExistingMatchingCard(c33964637.sprfilter1,tp,LOCATION_MZONE,0,1,nil,tp,c)
-end
-function c33964637.sprfilter1(c,tp,fc)
-	return c:IsFusionSetCard(0x3d) and c:IsAbleToGraveAsCost() and c:IsCanBeFusionMaterial(fc)
-		and Duel.IsExistingMatchingCard(c33964637.sprfilter2,tp,LOCATION_MZONE,0,1,c,tp,fc,c)
-end
-function c33964637.sprfilter2(c,tp,fc,mc)
-	return c:IsFusionSetCard(0x3d) and c:IsAbleToGraveAsCost() and c:IsCanBeFusionMaterial(fc) and not c:IsFusionAttribute(mc:GetFusionAttribute())
-		and Duel.IsExistingMatchingCard(c33964637.sprfilter3,tp,LOCATION_MZONE,0,1,c,tp,fc,mc,c)
-end
-function c33964637.sprfilter3(c,tp,fc,mc1,mc2)
-	local g=Group.FromCards(c,mc1,mc2)
-	return c:IsFusionSetCard(0x3d) and c:IsAbleToGraveAsCost() and c:IsCanBeFusionMaterial(fc) and not c:IsFusionAttribute(mc1:GetFusionAttribute()) and not c:IsFusionAttribute(mc2:GetFusionAttribute())
-		and Duel.GetLocationCountFromEx(tp,tp,g)>0
-end
-function c33964637.sprop(e,tp,eg,ep,ev,re,r,rp,c)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g1=Duel.SelectMatchingCard(tp,c33964637.sprfilter1,tp,LOCATION_MZONE,0,1,1,nil,tp,c)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g2=Duel.SelectMatchingCard(tp,c33964637.sprfilter2,tp,LOCATION_MZONE,0,1,1,g1:GetFirst(),tp,c,g1:GetFirst())
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g3=Duel.SelectMatchingCard(tp,c33964637.sprfilter3,tp,LOCATION_MZONE,0,1,1,g1:GetFirst(),tp,c,g1:GetFirst(),g2:GetFirst())
-	g1:Merge(g2)
-	g1:Merge(g3)
-	Duel.SendtoGrave(g1,REASON_COST)
-end
-function c33964637.costfilter(c,tp)
-	return c:IsSetCard(0x3d) and c:IsAbleToRemoveAsCost() and (c:IsLocation(LOCATION_HAND) or c:IsFaceup())
+function c33964637.costfilter(c)
+	return c:IsSetCard(0x3d) and c:IsAbleToRemoveAsCost() and ((c:IsOnField() and c:IsFaceup()) or c:IsLocation(LOCATION_HAND)) 
 		and Duel.IsExistingTarget(Card.IsAbleToRemove,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,c)
 end
 function c33964637.rmcost(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.IsExistingMatchingCard(c33964637.costfilter,tp,LOCATION_ONFIELD+LOCATION_HAND,0,1,nil,tp) end
+	if chk==0 then return Duel.IsExistingMatchingCard(c33964637.costfilter,tp,LOCATION_ONFIELD+LOCATION_HAND,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
-	local g=Duel.SelectMatchingCard(tp,c33964637.costfilter,tp,LOCATION_ONFIELD+LOCATION_HAND,0,1,1,nil,tp)
+	local g=Duel.SelectMatchingCard(tp,c33964637.costfilter,tp,LOCATION_ONFIELD+LOCATION_HAND,0,1,1,nil)
 	Duel.Remove(g,POS_FACEUP,REASON_COST)
 end
 function c33964637.rmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	local c=e:GetHandler()
-	if chkc then return chkc:IsLocation(LOCATION_ONFIELD) and chkc:IsAbleToRemove() end
+	if chkc then return chkc:IsOnField() and chkc:IsAbleToRemove() end
 	if chk==0 then return true end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_REMOVE)
 	local g=Duel.SelectTarget(tp,Card.IsAbleToRemove,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,1,1,nil)
@@ -105,16 +68,17 @@ function c33964637.rmtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c33964637.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsRelateToEffect(e) then
+	if tc and tc:IsRelateToEffect(e) then
 		Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)
 	end
 end
 function c33964637.repfilter(c,tp)
-	return c:IsFaceup() and c:IsSetCard(0x3d)
-		and c:IsLocation(LOCATION_MZONE) and c:IsControler(tp) and c:IsReason(REASON_EFFECT+REASON_BATTLE)
+	return c:IsFaceup() and c:IsSetCard(0x3d) and not c:IsReason(REASON_REPLACE)
+		and c:IsOnField() and c:IsControler(tp) and c:IsReason(REASON_EFFECT+REASON_BATTLE)
 end
 function c33964637.reptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsAbleToRemove() and eg:IsExists(c33964637.repfilter,1,nil,tp) end
+	if chk==0 then return not Duel.IsPlayerAffectedByEffect(e:GetHandlerPlayer(),69832741) and e:GetHandler():IsAbleToRemove() 
+		and eg:IsExists(c33964637.repfilter,1,nil,tp) end
 	return Duel.SelectEffectYesNo(tp,e:GetHandler(),96)
 end
 function c33964637.repval(e,c)

@@ -1,5 +1,5 @@
 --ナーゲルの守護天
---Nagel's Protection
+--Protected Sky of Nagel
 --Scripted by Eerie Code
 function c101003054.initial_effect(c)
 	--activate
@@ -43,14 +43,11 @@ end
 function c101003054.indtg(e,c)
 	return c:IsSetCard(0x20b) and c:GetSequence()<5
 end
-function c101003054.indval(e,re,rp)
-	return rp~=e:GetHandlerPlayer()
-end
 function c101003054.damval(e,re,val,r,rp,rc)
 	local tp=e:GetHandlerPlayer()
 	if Duel.GetFlagEffect(tp,101003054)~=0 or bit.band(r,REASON_BATTLE)==0
 		or not rc:IsSetCard(0x20b) or not rc:IsControler(tp) then return val end
-	Duel.RegisterFlagEffect(tp,101003054,RESET_PHASE+PHASE_END,0,1)
+	Duel.ResetFlagEffect(tp,101003054)
 	return val*2
 end
 function c101003054.cfilter(c)
