@@ -73,25 +73,21 @@ end
 function c37433748.dircon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.IsAbleToEnterBP()
 end
-function c37433748.cfilter(c,ec)
-	return c:IsAbleToGraveAsCost() and c~=ec
-end
 function c37433748.dircost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	local ec=c:GetEquipTarget()
-	if chk==0 then return Duel.IsExistingMatchingCard(c37433748.cfilter,tp,LOCATION_ONFIELD,0,1,c,ec) end
+	local g=Group.FromCards(c,c:GetEquipTarget()) 
+	if chk==0 then return Duel.IsExistingMatchingCard(Card.IsAbleToGraveAsCost,tp,LOCATION_ONFIELD,0,1,g) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g=Duel.SelectMatchingCard(tp,c37433748.cfilter,tp,LOCATION_ONFIELD,0,1,1,c,ec)
+	local g=Duel.SelectMatchingCard(tp,Card.IsAbleToGraveAsCost,tp,LOCATION_ONFIELD,0,1,1,g)
 	Duel.SendtoGrave(g,REASON_COST)
 end
 function c37433748.dirop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
 	if not c:IsRelateToEffect(e) then return end
-	local ec=c:GetEquipTarget()
-	if not ec then return end
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_SINGLE)
-	e1:SetCode(EFFECT_DIRECT_ATTACK)
-	e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
-	ec:RegisterEffect(e1)
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_EQUIP)
+	e3:SetProperty(EFFECT_CANNOT_DISABLE)
+	e3:SetCode(EFFECT_DIRECT_ATTACK)
+	e3:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
+	c:RegisterEffect(e3)
 end

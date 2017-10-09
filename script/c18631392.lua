@@ -27,23 +27,29 @@ function c18631392.initial_effect(c)
 	e3:SetTarget(c18631392.anctg)
 	c:RegisterEffect(e3)
 end
+function c18631392.rescon(sg,e,tp,mg)
+	return aux.ChkfMMZ(1)(sg,e,tp,mg) and sg:IsExists(c18631392.atchk1,1,nil,sg)
+end
+function c18631392.atchk1(c,sg)
+	return c:IsRace(RACE_FAIRY) and sg:FilterCount(Card.IsRace,c,RACE_DRAGON)==1
+end
 function c18631392.spfilter(c,rac)
 	return c:IsFaceup() and c:IsAttribute(ATTRIBUTE_LIGHT) and c:IsRace(rac) and c:IsAbleToGraveAsCost()
 end
 function c18631392.spcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
-	return Duel.GetLocationCount(tp,LOCATION_MZONE)>-2
-		and Duel.IsExistingMatchingCard(c18631392.spfilter,tp,LOCATION_MZONE,0,1,nil,RACE_FAIRY)
-		and Duel.IsExistingMatchingCard(c18631392.spfilter,tp,LOCATION_MZONE,0,1,nil,RACE_DRAGON)
+	local rg1=Duel.GetMatchingGroup(c18631392.spfilter,tp,LOCATION_MZONE,0,nil,RACE_FAIRY)
+	local rg2=Duel.GetMatchingGroup(c18631392.spfilter,tp,LOCATION_MZONE,0,nil,RACE_DRAGON)
+	local rg=rg1:Clone()
+	rg:Merge(rg2)
+	return Duel.GetLocationCount(tp,LOCATION_MZONE)>-2 and rg1:GetCount()>0 and rg2:GetCount()>0
+		and aux.SelectUnselectGroup(rg,e,tp,2,2,c18631392.rescon,0)
 end
 function c18631392.spop(e,tp,eg,ep,ev,re,r,rp,c)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g1=Duel.SelectMatchingCard(tp,c18631392.spfilter,tp,LOCATION_MZONE,0,1,1,nil,RACE_FAIRY)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-	local g2=Duel.SelectMatchingCard(tp,c18631392.spfilter,tp,LOCATION_MZONE,0,1,1,nil,RACE_DRAGON)
-	g1:Merge(g2)
-	Duel.SendtoGrave(g1,REASON_COST)
+	local rg=Duel.GetMatchingGroup(c18631392.spfilter,tp,LOCATION_MZONE,0,nil,RACE_FAIRY+RACE_DRAGON)
+	local g=aux.SelectUnselectGroup(rg,e,tp,2,2,c18631392.rescon,1,tp,HINTMSG_TOGRAVE)
+	Duel.SendtoGrave(g,REASON_COST)
 end
 function c18631392.anctg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then
@@ -51,12 +57,12 @@ function c18631392.anctg(e,tp,eg,ep,ev,re,r,rp,chk)
 		local g=Duel.GetDecktopGroup(tp,3)
 		return g:FilterCount(Card.IsAbleToHand,nil)>0
 	end
-	c18631392.announce_filter={TYPE_FUSION+TYPE_SYNCHRO+TYPE_XYZ+TYPE_LINK,OPCODE_ISTYPE,OPCODE_NOT}
-	Duel.Hint(HINT_SELECTMSG,tp,564)
+	c18631392.announce_filter={TYPE_EXTRA,OPCODE_ISTYPE,OPCODE_NOT}
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CODE)
 	local ac1=Duel.AnnounceCardFilter(tp,table.unpack(c18631392.announce_filter))
-	Duel.Hint(HINT_SELECTMSG,tp,564)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CODE)
 	local ac2=Duel.AnnounceCardFilter(tp,table.unpack(c18631392.announce_filter))
-	Duel.Hint(HINT_SELECTMSG,tp,564)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CODE)
 	local ac3=Duel.AnnounceCardFilter(tp,table.unpack(c18631392.announce_filter))
 	e:SetOperation(c18631392.retop(ac1,ac2,ac3))
 end

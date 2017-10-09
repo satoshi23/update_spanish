@@ -22,6 +22,8 @@ function c86937530.initial_effect(c)
 	e2:SetTarget(c86937530.thtg)
 	e2:SetOperation(c86937530.thop)
 	c:RegisterEffect(e2)
+	if not AshBlossomTable then AshBlossomTable={} end
+	table.insert(AshBlossomTable,e2)
 end
 function c86937530.filter(c)
 	return c:GetAttack()==1850 and c:IsRace(RACE_SPELLCASTER) and c:IsAbleToHand()

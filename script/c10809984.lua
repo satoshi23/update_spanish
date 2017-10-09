@@ -16,8 +16,8 @@ function c10809984.drcon(e,tp,eg,ep,ev,re,r,rp)
 end
 function c10809984.drtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return true end
-	Duel.Hint(HINT_SELECTMSG,tp,564)
-	c10809984.announce_filter={TYPE_FUSION+TYPE_SYNCHRO+TYPE_XYZ+TYPE_LINK,OPCODE_ISTYPE,OPCODE_NOT}
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_CODE)
+	c10809984.announce_filter={TYPE_EXTRA,OPCODE_ISTYPE,OPCODE_NOT}
 	local ac=Duel.AnnounceCardFilter(tp,table.unpack(c10809984.announce_filter))
 	Duel.SetTargetParam(ac)
 	Duel.SetOperationInfo(0,CATEGORY_ANNOUNCE,nil,0,tp,ANNOUNCE_CARD_FILTER)

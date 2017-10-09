@@ -37,7 +37,7 @@ function c64689404.ractg(e,tp,eg,ep,ev,re,r,rp,chk)
 		e:GetLabelObject():SetLabel(0)
 	end
 	local prc=e:GetLabelObject():GetLabel()
-	Duel.Hint(HINT_SELECTMSG,tp,563)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RACE)
 	local rc=Duel.AnnounceRace(tp,1,RACE_ALL-prc)
 	e:SetLabel(rc)
 end
@@ -60,7 +60,7 @@ function c64689404.destg(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c64689404.desop(e,tp,eg,ep,ev,re,r,rp)
 	local bc=e:GetHandler():GetBattleTarget()
-	if bc:IsRelateToBattle() then
+	if bc and bc:IsRelateToBattle() then
 		Duel.Destroy(bc,REASON_EFFECT)
 	end
 end

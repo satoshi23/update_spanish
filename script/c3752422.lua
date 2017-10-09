@@ -49,20 +49,16 @@ function c3752422.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc~=c and chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and c3752422.filter(chkc) end
 	if chk==0 then return c:GetLevel()>1
 		and Duel.IsExistingTarget(c3752422.filter,tp,LOCATION_MZONE,0,1,c) end
-	local t={}
-	local p=c:GetLevel()-1
-	p=math.min(p,5)
-	for i=1,p do
-		t[i]=i
-	end
-	Duel.Hint(HINT_SELECTMSG,tp,567)
-	e:SetLabel(Duel.AnnounceNumber(tp,table.unpack(t)))
+	local p=math.min(c:GetLevel()-1,5)
+	Duel.Hint(HINT_SELECTMSG,tp,HINGMSG_LVRANK)
+	local lv=Duel.AnnounceLevel(tp,1,p)
+	Duel.SetTargetParam(lv)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TARGET)
 	Duel.SelectTarget(tp,c3752422.filter,tp,LOCATION_MZONE,0,1,1,c)
 end
 function c3752422.operation(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	local lv=e:GetLabel()
+	local lv=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
 	if c:IsFaceup() and c:IsRelateToEffect(e) then
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
@@ -71,7 +67,7 @@ function c3752422.operation(e,tp,eg,ep,ev,re,r,rp)
 		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		c:RegisterEffect(e1)
 		local tc=Duel.GetFirstTarget()
-		if tc:IsFaceup() and tc:IsRelateToEffect(e) then
+		if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then
 			local e2=Effect.CreateEffect(c)
 			e2:SetType(EFFECT_TYPE_SINGLE)
 			e2:SetCode(EFFECT_UPDATE_LEVEL)

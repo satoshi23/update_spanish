@@ -49,24 +49,18 @@ function c70456282.lvtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then return Duel.IsExistingTarget(c70456282.filter,tp,LOCATION_MZONE,0,1,nil) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
 	local g=Duel.SelectTarget(tp,c70456282.filter,tp,LOCATION_MZONE,0,1,1,nil)
-	local t={}
-	local i=1
-	local p=1
-	local lv=g:GetFirst():GetLevel()
-	for i=1,8 do
-		if lv~=i then t[p]=i p=p+1 end
-	end
-	t[p]=nil
-	Duel.Hint(HINT_SELECTMSG,tp,567)
-	e:SetLabel(Duel.AnnounceNumber(tp,table.unpack(t)))
+	Duel.Hint(HINT_SELECTMSG,tp,HINGMSG_LVRANK)
+	local lv=Duel.AnnounceLevel(tp,1,8,g:GetFirst():GetLevel())
+	Duel.SetTargetParam(lv)
 end
 function c70456282.lvop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if tc:IsFaceup() and tc:IsRelateToEffect(e) then
+	local lv=Duel.GetChainInfo(0,CHAININFO_TARGET_PARAM)
+	if tc and tc:IsFaceup() and tc:IsRelateToEffect(e) then
 		local e1=Effect.CreateEffect(e:GetHandler())
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_CHANGE_LEVEL)
-		e1:SetValue(e:GetLabel())
+		e1:SetValue(lv)
 		e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END)
 		tc:RegisterEffect(e1)
 	end
