@@ -1,12 +1,7 @@
 
 --Ritual Summon, geq fixed lv
-function Auxiliary.AddRitualProcGreater(c,filter,desc)
+function Auxiliary.AddRitualProcGreater(c,filter)
 	local e1=Effect.CreateEffect(c)
-	if desc then
-		e1:SetDescription(desc)
-	else
-		e1:SetDescription(1057)
-	end
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
@@ -77,13 +72,8 @@ function Auxiliary.AddRitualProcGreaterCode(c,code1)
 	Auxiliary.AddRitualProcGreater(c,Auxiliary.FilterBoolFunction(Card.IsCode,code1))
 end
 --Ritual Summon, equal to fixed lv
-function Auxiliary.AddRitualProcEqual(c,filter,desc)
+function Auxiliary.AddRitualProcEqual(c,filter)
 	local e1=Effect.CreateEffect(c)
-	if desc then
-		e1:SetDescription(desc)
-	else
-		e1:SetDescription(1057)
-	end
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
@@ -154,13 +144,8 @@ function Auxiliary.AddRitualProcEqualCode(c,code1)
 	Auxiliary.AddRitualProcEqual(c,Auxiliary.FilterBoolFunction(Card.IsCode,code1))
 end
 --Ritual Summon, equal to monster lv
-function Auxiliary.AddRitualProcEqual2(c,filter,desc)
+function Auxiliary.AddRitualProcEqual2(c,filter)
 	local e1=Effect.CreateEffect(c)
-	if desc then
-		e1:SetDescription(desc)
-	else
-		e1:SetDescription(1057)
-	end
 	e1:SetCategory(CATEGORY_SPECIAL_SUMMON)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)

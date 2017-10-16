@@ -47,8 +47,8 @@ function c101003043.regop(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetReset(RESET_PHASE+PHASE_END)
 	Duel.RegisterEffect(e2,tp)
 end
-function c101003043.matfilter(c)
-	return c:IsRace(RACE_CYBERSE) and c:IsLinkType(TYPE_LINK)
+function c101003043.matfilter(c,lc,sumtype,tp)
+	return c:IsRace(RACE_CYBERSE,lc,sumtype,tp) and c:IsType(TYPE_LINK,lc,sumtype,tp)
 end
 function c101003043.damval1(e,re,val,r,rp,rc)
 	if bit.band(r,REASON_EFFECT)~=0 then return 0

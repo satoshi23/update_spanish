@@ -2,8 +2,9 @@
 --Crystron Halifiber
 --Scripted by Eerie Code
 function c100223091.initial_effect(c)
+	--link summon
+	aux.AddLinkProcedure(c,nil,2,2,c100223091.lcheck)
 	c:EnableReviveLimit()
-	aux.AddLinkProcedure(c,nil,2,2,c100223091.spcheck)
 	--spsummon
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(100223091,0))
@@ -32,7 +33,7 @@ function c100223091.initial_effect(c)
 	e2:SetOperation(c100223091.spop)
 	c:RegisterEffect(e2)
 end
-function c100223091.spcheck(g,lc,tp)
+function c100223091.lcheck(g,lc)
 	return g:IsExists(Card.IsType,1,nil,TYPE_TUNER)
 end
 function c100223091.hspcon(e,tp,eg,ep,ev,re,r,rp)
@@ -42,14 +43,14 @@ function c100223091.hspfilter(c,e,tp)
 	return c:IsType(TYPE_TUNER) and c:IsLevelBelow(3) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE)
 end
 function c100223091.hsptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>-1
-		and Duel.IsExistingMatchingCard(c100223091.hspfilter,tp,LOCATION_HAND,0,1,nil,e,tp) end
-	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND)
+	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
+		and Duel.IsExistingMatchingCard(c100223091.hspfilter,tp,LOCATION_HAND+LOCATION_DECK,0,1,nil,e,tp) end
+	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_HAND+LOCATION_DECK)
 end
 function c100223091.hspop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,c100223091.hspfilter,tp,LOCATION_HAND,0,1,1,nil,e,tp)
+	local g=Duel.SelectMatchingCard(tp,c100223091.hspfilter,tp,LOCATION_HAND+LOCATION_DECK,0,1,1,nil,e,tp)
 	local tc=g:GetFirst()
 	if tc and Duel.SpecialSummonStep(tc,0,tp,tp,false,false,POS_FACEUP_DEFENSE) then
 		local e1=Effect.CreateEffect(e:GetHandler())
@@ -69,13 +70,13 @@ function c100223091.spfilter(c,e,tp)
 	return c:IsType(TYPE_SYNCHRO) and c:IsType(TYPE_TUNER) and c:IsCanBeSpecialSummoned(e,SUMMON_TYPE_SYNCHRO,tp,false,false)
 end
 function c100223091.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return (Duel.GetLocationCountFromEx(tp)>0 or e:GetHandler():CheckMZoneFromEx(tp))
+	if chk==0 then return Duel.GetLocationCountFromEx(tp,tp,c)>0
 		and Duel.IsExistingMatchingCard(c100223091.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp) end
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
 end
 function c100223091.spop(e,tp,eg,ep,ev,re,r,rp)
 	local ft=Duel.GetLocationCountFromEx(tp)
-	if ft==0 then return end
+	if ft<=0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
 	local g=Duel.SelectMatchingCard(tp,c100223091.spfilter,tp,LOCATION_EXTRA,0,1,ft,nil,e,tp):GetFirst()
 	if tc then

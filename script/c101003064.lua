@@ -23,21 +23,9 @@ function c101003064.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c101003064.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if not tc:IsRelateToEffect(e) or tc:IsControler(1-tp) then return end
-	local seq=tc:GetSequence()
-	local flag=0
-	for i=0,4 do
-		if Duel.CheckLocation(tp,LOCATION_MZONE,i) then flag=bit.bor(flag,math.pow(2,i)) end
-	end
-	if flag==0 then return end
+	if not tc:IsRelateToEffect(e) or tc:IsControler(1-tp) or Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
 	Duel.Hint(HINT_SELECTMSG,tp,571)
-	local s=Duel.SelectDisableField(tp,1,LOCATION_MZONE,0,flag)
-	local nseq=0
-	for i=0,4 do
-		if math.pow(2,i+16)==s then
-			nseq=i
-			break
-		end
-	end
+	local s=Duel.SelectDisableField(tp,1,LOCATION_MZONE,0,nil)
+	local nseq=math.log(s,2)
 	Duel.MoveSequence(tc,nseq)
 end

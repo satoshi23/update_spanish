@@ -3,25 +3,7 @@ aux=Auxiliary
 POS_FACEUP_DEFENCE=POS_FACEUP_DEFENSE
 POS_FACEDOWN_DEFENCE=POS_FACEDOWN_DEFENSE
 RACE_CYBERS=RACE_CYBERSE
-TYPE_EXTRA=TYPE_FUSION+TYPE_SYNCHRO+TYPE_XYZ+TYPE_LINK
 
-function Auxiliary.GetMustBeMaterialGroup(tp,eg,sump,sc,g,r)
-	--- eg all default materials, g - valid materials
-	local eff={Duel.GetPlayerEffect(tp,EFFECT_MUST_BE_MATERIAL)}
-	local g=Group.CreateGroup()
-	for _,te in ipairs(eff) do
-		local val=type(te:GetValue())=='function' and te:GetValue()(te,eg,sump,sc,g) or te:GetValue()
-		if val&r>0 then
-			g:AddCard(te:GetHandler())
-		end
-	end
-	return g
-end
-function Group.Includes(g1,g2)
-	local g1p=g1:Clone()
-	g1p:Sub(g2)
-	return g1p:GetCount()+g2:GetCount()==g1:GetCount()
-end
 function Auxiliary.ExtraLinked(c,emc,card,eg)
 	eg:AddCard(c)
 	local res
@@ -290,10 +272,10 @@ function Auxiliary.IsMaterialListSetCard(c,...)
 	return false
 end
 function Auxiliary.IsCodeListed(c,...)
-	if not c.listed_names then return false end
+	if not c.card_code_list then return false end
 	local codes={...}
 	for _,code in ipairs(codes) do
-		for _,ccode in ipairs(c.listed_names) do
+		for _,ccode in ipairs(c.card_code_list) do
 			if code==ccode then return true end
 		end
 	end
@@ -301,7 +283,7 @@ function Auxiliary.IsCodeListed(c,...)
 end
 --card effect disable filter(target)
 function Auxiliary.disfilter1(c)
-	return c:IsFaceup() and not c:IsDisabled() and (not c:IsType(TYPE_NORMAL) or c:GetOriginalType()&TYPE_EFFECT~=0)
+	return c:IsFaceup() and not c:IsDisabled() and (not c:IsType(TYPE_NORMAL) or bit.band(c:GetOriginalType(),TYPE_EFFECT)~=0)
 end
 --condition of EVENT_BATTLE_DESTROYING
 function Auxiliary.bdcon(e,tp,eg,ep,ev,re,r,rp)
@@ -367,23 +349,23 @@ function Auxiliary.sumreg(e,tp,eg,ep,ev,re,r,rp)
 end
 --sp_summon condition for fusion monster
 function Auxiliary.fuslimit(e,se,sp,st)
-	return st&SUMMON_TYPE_FUSION==SUMMON_TYPE_FUSION
+	return bit.band(st,SUMMON_TYPE_FUSION)==SUMMON_TYPE_FUSION
 end
 --sp_summon condition for ritual monster
 function Auxiliary.ritlimit(e,se,sp,st)
-	return st&SUMMON_TYPE_RITUAL==SUMMON_TYPE_RITUAL
+	return bit.band(st,SUMMON_TYPE_RITUAL)==SUMMON_TYPE_RITUAL
 end
 --sp_summon condition for synchro monster
 function Auxiliary.synlimit(e,se,sp,st)
-	return st&SUMMON_TYPE_SYNCHRO==SUMMON_TYPE_SYNCHRO
+	return bit.band(st,SUMMON_TYPE_SYNCHRO)==SUMMON_TYPE_SYNCHRO
 end
 --sp_summon condition for xyz monster
 function Auxiliary.xyzlimit(e,se,sp,st)
-	return st&SUMMON_TYPE_XYZ==SUMMON_TYPE_XYZ
+	return bit.band(st,SUMMON_TYPE_XYZ)==SUMMON_TYPE_XYZ
 end
 --sp_summon condition for pendulum monster
 function Auxiliary.penlimit(e,se,sp,st)
-	return st&SUMMON_TYPE_PENDULUM==SUMMON_TYPE_PENDULUM
+	return bit.band(st,SUMMON_TYPE_PENDULUM)==SUMMON_TYPE_PENDULUM
 end
 --effects inflicting damage to tp
 function Auxiliary.damcon1(e,tp,eg,ep,ev,re,r,rp)
@@ -761,52 +743,6 @@ function Auxiliary.CallToken(code)
 		end)
 		Duel.RegisterEffect(ge,0)
 	end
-end
---utility entry for SelectUnselect loops
---returns bool if chk==0, returns Group if chk==1
-function Auxiliary.SelectUnselectLoop(c,sg,mg,e,tp,minc,maxc,rescon)
-	local res
-	if sg:GetCount()>=maxc then return false end
-	sg:AddCard(c)
-	if sg:GetCount()<minc then
-		res=mg:IsExists(Auxiliary.SelectUnselectLoop,1,sg,sg,mg,e,tp,minc,maxc,rescon)
-	elseif sg:GetCount()<maxc then
-		res=(not rescon or rescon(sg,e,tp,mg)) or mg:IsExists(Auxiliary.SelectUnselectLoop,1,sg,sg,mg,e,tp,minc,maxc,rescon)
-	else
-		res=(not rescon or rescon(sg,e,tp,mg))
-	end
-	sg:RemoveCard(c)
-	return res
-end
-function Auxiliary.SelectUnselectGroup(g,e,tp,minc,maxc,rescon,chk,seltp,hintmsg,cancelcon,breakcon)
-	local minc=minc and minc or 1
-	local maxc=maxc and maxc or 99
-	if chk==0 then return g:IsExists(Auxiliary.SelectUnselectLoop,1,nil,Group.CreateGroup(),g,e,tp,minc,maxc,rescon) end
-	local hintmsg=hintmsg and hintmsg or 0
-	local sg=Group.CreateGroup()
-	while true do
-		local cancel=sg:GetCount()>=minc and (not cancelcon or cancelcon(sg,e,tp,g))
-		local mg=g:Filter(Auxiliary.SelectUnselectLoop,sg,sg,g,e,tp,minc,maxc,rescon)
-		if (breakcon and breakcon(sg,e,tp,mg)) or mg:GetCount()<=0 then break end
-		Duel.Hint(HINT_SELECTMSG,seltp,hintmsg)
-		local tc=mg:SelectUnselect(sg,seltp,cancel,cancel)
-		if sg:IsContains(tc) then
-			sg:RemoveCard(tc)
-		else
-			sg:AddCard(tc)
-		end
-	end
-	return sg
-end
---check for free Zone for monsters to be Special Summoned except from Extra Deck
-function Auxiliary.MZFilter(c,tp)
-	return c:IsLocation(LOCATION_MZONE) and c:GetSequence()<5 and c:IsControler(tp)
-end
---check for Free Monster Zones
-function Auxiliary.ChkfMMZ(sumcount)
-	return	function(sg,e,tp,mg)
-				return sg:FilterCount(Auxiliary.MZFilter,nil,tp)+Duel.GetLocationCount(tp,LOCATION_MZONE)>=sumcount
-			end
 end
 
 function loadutility(file)

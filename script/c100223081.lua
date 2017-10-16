@@ -2,6 +2,7 @@
 --Cherubini, Black Angel of the Burning Abyss
 --Scripted by Eerie Code
 function c100223081.initial_effect(c)
+	--link summon
 	c:EnableReviveLimit()
 	aux.AddLinkProcedure(c,aux.FilterBoolFunction(Card.IsLevel,3),2,2)
 	--indestructable
@@ -29,6 +30,7 @@ function c100223081.initial_effect(c)
 	e3:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetLabel(0)
+	e3:SetCountLimit(1,100223081)
 	e3:SetCost(c100223081.atkcost)
 	e3:SetTarget(c100223081.atktg)
 	e3:SetOperation(c100223081.atkop)
@@ -40,31 +42,31 @@ end
 function c100223081.desreptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return not c:IsReason(REASON_REPLACE) and (c:IsReason(REASON_BATTLE) or rp~=tp)
-		and Duel.IsExistingMatchingCard(nil,tp,LOCATION_ONFIELD,0,1,c) end
+		and Duel.IsExistingMatchingCard(aux.NOT(Card.IsStatus),tp,LOCATION_ONFIELD,0,1,c,STATUS_BATTLE_DESTROYED) end
 	if Duel.SelectEffectYesNo(tp,e:GetHandler(),96) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-		local g=Duel.SelectMatchingCard(tp,nil,tp,LOCATION_ONFIELD,0,1,1,c)
+		local g=Duel.SelectMatchingCard(tp,aux.NOT(Card.IsStatus),tp,LOCATION_ONFIELD,0,1,1,c,STATUS_BATTLE_DESTROYED)
 		Duel.SendtoGrave(g,REASON_EFFECT+REASON_REPLACE)
 		return true
 	else return false end
-endend
+end
 function c100223081.atkcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	e:SetLabel(1)
 	return true
 end
 function c100223081.cfilter(c)
-	return c:IsLevel(3) and (c:GetTextAttack()>0 or c:GetTextDefense()>0) and c:IsAbleToGraveAsCost()
+	return c:IsLevel(3) and (c:GetBaseAttack()>0 or c:GetBaseDefense()>0) and c:IsAbleToGraveAsCost()
 end
 function c100223081.filter(c)
 	return c:IsFaceup() and c:IsSetCard(0xb1)
 end
 function c100223081.atktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
-	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and chkc:IsFaceup() end
+	if chkc then return chkc:IsLocation(LOCATION_MZONE) and c100223081.filter(chkc) end
 	if chk==0 then
 		if e:GetLabel()~=1 then return false end
 		e:SetLabel(0)
 		return Duel.IsExistingMatchingCard(c100223081.cfilter,tp,LOCATION_DECK,0,1,nil)
-			and Duel.IsExistingTarget(c100223081.filter,tp,LOCATION_MZONE,0,1,nil)
+			and Duel.IsExistingTarget(c100223081.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil)
 	end
 	e:SetLabel(0)
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
@@ -72,7 +74,7 @@ function c100223081.atktg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SendtoGrave(g,REASON_COST)
 	e:SetLabelObject(g:GetFirst())
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_FACEUP)
-	Duel.SelectTarget(tp,c100223081.filter,tp,LOCATION_MZONE,0,1,1,nil)
+	Duel.SelectTarget(tp,c100223081.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil)
 end
 function c100223081.atkop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
