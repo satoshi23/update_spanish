@@ -38,7 +38,7 @@ function c41925941.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chk==0 then
 		if e:GetLabel()~=1 then return false end
 		e:SetLabel(0)
-		return Duel.CheckLPCost(tp,100) and (bc:IsAttackAbove(100) or bc:IsDefenseAbove(100)) and tc:IsCanBeEffectTarget(e) end
+		return Duel.CheckLPCost(tp,100) and (tc:IsAttackAbove(100) or tc:IsDefenseAbove(100)) and tc:IsCanBeEffectTarget(e) end
 	local maxc=Duel.GetLP(tp)
 	local maxpay=bc:GetAttack()
 	local def=bc:GetDefense()

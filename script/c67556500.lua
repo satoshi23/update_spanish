@@ -1,6 +1,5 @@
 --波動竜フォノン・ドラゴン
 function c67556500.initial_effect(c)
-	Duel.EnableGlobalFlag(GLOBALFLAG_MUST_BE_SMATERIAL)
 	c:SetSPSummonOnce(67556500)
 	--synchro summon
 	aux.AddSynchroProcedure(c,nil,1,1,aux.NonTuner(nil),1,99)
@@ -49,10 +48,11 @@ function c67556500.lvop(e,tp,eg,ep,ev,re,r,rp)
 	local e3=Effect.CreateEffect(c)
 	e3:SetType(EFFECT_TYPE_FIELD)
 	e3:SetRange(LOCATION_MZONE)
-	e3:SetCode(EFFECT_MUST_BE_SMATERIAL)
+	e3:SetCode(EFFECT_MUST_BE_MATERIAL)
 	e3:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE)
 	e3:SetTargetRange(1,0)
 	e3:SetReset(RESET_EVENT+0x1fc0000+RESET_PHASE+PHASE_END)
+	e3:SetValue(REASON_SYNCHRO)
 	c:RegisterEffect(e3)
 end
 function c67556500.splimit(e,c,sump,sumtype,sumpos,targetp,se)
