@@ -3,8 +3,8 @@
 --Scripted by Eerie Code
 function c100223011.initial_effect(c)
 	--link summon
+	aux.AddLinkProcedure(c,nil,3,3,c100223011.lcheck)
 	c:EnableReviveLimit()
-	aux.AddLinkProcedure(c,nil,3,3,c100223011.spcheck)
 	--to grave
 	local e1=Effect.CreateEffect(c)
 	e1:SetDescription(aux.Stringid(100223011,0))
@@ -24,9 +24,9 @@ function c100223011.initial_effect(c)
 	e2:SetRange(LOCATION_MZONE)
 	e2:SetCode(EVENT_TO_GRAVE)
 	e2:SetCountLimit(1,100223011+100)
-	e2:SetCondition(c100223011.gycon2)
-	e2:SetTarget(c100223011.gytg2)
-	e2:SetOperation(c100223011.gyop2)
+	e2:SetCondition(c100223011.ddcon)
+	e2:SetTarget(c100223011.ddtg)
+	e2:SetOperation(c100223011.ddop)
 	c:RegisterEffect(e2)
 	--to hand
 	local e3=Effect.CreateEffect(c)
@@ -40,8 +40,8 @@ function c100223011.initial_effect(c)
 	e3:SetOperation(c100223011.thop)
 	c:RegisterEffect(e3)
 end
-function c100223011.spcheck(g,lc,tp)
-	return g:GetClassCount(Card.GetRace,lc,SUMMON_TYPE_LINK,tp)==g:GetCount() and g:GetClassCount(Card.GetAttribute,lc,SUMMON_TYPE_LINK,tp)==1
+function c100223011.lcheck(g)
+	return g:GetClassCount(Card.GetAttribute)==1 and g:GetClassCount(Card.GetRace)==g:GetCount()
 end
 function c100223011.tgcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)
