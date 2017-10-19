@@ -36,7 +36,7 @@ function c80959027.initial_effect(c)
 	e4:SetCategory(CATEGORY_TOHAND)
 	e4:SetType(EFFECT_TYPE_IGNITION)
 	e4:SetRange(LOCATION_MZONE)
-	e4:SetCountLimit(1,101003125)
+	e4:SetCountLimit(1,80959028)
 	e4:SetCost(c80959027.thcost)
 	e4:SetTarget(c80959027.thtg)
 	e4:SetOperation(c80959027.thop)
@@ -75,12 +75,12 @@ function c80959027.acop(e,tp,eg,ep,ev,re,r,rp)
 	end
 end
 function c80959027.thfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x209) and c:IsAbleToHand()
+	return c:IsFaceup() and c:IsSetCard(0x10d) and c:IsAbleToHand()
 end
 function c80959027.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
-	if chk==0 then return Duel.IsCanRemoveCounter(tp,1,0,0x1,2,REASON_COST) end
-	Duel.RemoveCounter(tp,1,0,0x1,2,REASON_COST)
+	if chk==0 then return Duel.IsCanRemoveCounter(tp,1,0,0x1,3,REASON_COST) end
+	Duel.RemoveCounter(tp,1,0,0x1,3,REASON_COST)
 end
 function c80959027.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.IsExistingMatchingCard(c80959027.thfilter,tp,LOCATION_PZONE+LOCATION_EXTRA,0,1,nil) end

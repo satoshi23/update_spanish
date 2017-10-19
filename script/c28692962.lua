@@ -15,51 +15,43 @@ function c28692962.initial_effect(c)
 	--banish & search
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(28692962,0))
-	e2:SetCategory(CATEGORY_REMOVE)
+	e2:SetCategory(CATEGORY_REMOVE+CATEGORY_SEARCH)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetCode(EVENT_FREE_CHAIN)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e2:SetRange(LOCATION_MZONE)
-	e2:SetCountLimit(1,28692962+100)
+	e2:SetCountLimit(1,28692963)
 	e2:SetTarget(c28692962.thtg)
 	e2:SetOperation(c28692962.thop)
 	c:RegisterEffect(e2)
 end
-function c28692962.cfilter(c,tp,seq)
-	local s=c:GetSequence()
-	if c:IsLocation(LOCATION_SZONE) and s==5 then return false end
-	if c:IsControler(tp) then
-		return s==seq or (seq==1 and s==5) or (seq==3 and s==6)
-	else
-		return s==4-seq or (seq==1 and s==6) or (seq==3 and s==5)
-	end
+function c28692962.cfilter(c)
+	return c:GetColumnGroupCount()>0
 end
 function c28692962.hspcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
 	local zone=0
-	for i=0,4 do
-		if Duel.GetMatchingGroupCount(c28692962.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,tp,i)>=2 then
-			zone=zone+math.pow(2,i)
-		end
+	local lg=Duel.GetMatchingGroup(c28692962.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
+	for tc in aux.Next(lg) do
+		zone=bit.bor(zone,tc:GetColumnZone(LOCATION_MZONE,0,0,tp))
 	end
 	return Duel.GetLocationCount(tp,LOCATION_MZONE,tp,LOCATION_REASON_TOFIELD,zone)>0
 end
 function c28692962.hspval(e,c)
 	local tp=c:GetControler()
 	local zone=0
-	for i=0,4 do
-		if Duel.GetMatchingGroupCount(c28692962.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,tp,i)>=2 then
-			zone=zone+math.pow(2,i)
-		end
+	local lg=Duel.GetMatchingGroup(c28692962.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
+	for tc in aux.Next(lg) do
+		zone=bit.bor(zone,tc:GetColumnZone(LOCATION_MZONE,0,0,tp))
 	end
 	return 0,zone
 end
 function c28692962.rmfilter(c)
-	return c:IsFaceup() and c:IsSetCard(0x20c) and c:IsAbleToRemove()
+	return c:IsFaceup() and c:IsSetCard(0x10c) and c:IsAbleToRemove()
 end
 function c28692962.thfilter(c)
-	return c:IsSetCard(0x20c) and c:IsType(TYPE_MONSTER) and not c:IsCode(28692962) and c:IsAbleToHand()
+	return c:IsSetCard(0x10c) and c:IsType(TYPE_MONSTER) and not c:IsCode(28692962) and c:IsAbleToHand()
 end
 function c28692962.thtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return chkc:IsLocation(LOCATION_MZONE) and chkc:IsControler(tp) and c28692962.rmfilter(chkc) end
