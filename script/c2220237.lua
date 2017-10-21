@@ -65,3 +65,4 @@ end
 function c2220237.damcon(e)
 	return e:GetHandler():GetFlagEffect(2220237)==0
 end
+

@@ -32,3 +32,4 @@ function c38203732.activate(e,tp,eg,ep,ev,re,r,rp)
 	local tc2=Duel.SelectMatchingCard(tp,c38203732.filter2,tp,LOCATION_EXTRA,0,1,1,tc1,tc1:GetLeftScale(),tc1:GetCode()):GetFirst()
 	Duel.SendtoHand(Group.FromCards(tc1,tc2),nil,REASON_EFFECT)
 end
+

@@ -45,3 +45,4 @@ function c88392300.seqop(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.MoveSequence(tc,nseq)
 end
+

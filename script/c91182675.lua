@@ -42,7 +42,6 @@ function c91182675.initial_effect(c)
 	e4:SetOperation(c91182675.spop)
 	c:RegisterEffect(e4)
 end
-c91182675.spell_counter_permit=99
 function c91182675.ctcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.CheckLocation(tp,LOCATION_PZONE,0) or Duel.CheckLocation(tp,LOCATION_PZONE,1)
 end
@@ -80,7 +79,7 @@ function c91182675.spcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	Duel.Release(c,REASON_COST)
 end
 function c91182675.spfilter(c,e,tp)
-	return (c:IsSetCard(0x209) or c:IsCode(55424270)) and not c:IsCode(91182675)
+	return (c:IsSetCard(0x10d) or c:IsCode(55424270)) and not c:IsCode(91182675)
 		and c:IsType(TYPE_EFFECT) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c91182675.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -95,3 +94,4 @@ function c91182675.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
+

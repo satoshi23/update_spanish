@@ -23,7 +23,7 @@ function c13482075.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e2:SetCode(EVENT_RELEASE)
 	e2:SetProperty(EFFECT_FLAG_DELAY)
-	e2:SetCountLimit(1,13482075+100)
+	e2:SetCountLimit(1,13482076)
 	e2:SetCondition(c13482075.atkcon)
 	e2:SetTarget(c13482075.atktg)
 	e2:SetOperation(c13482075.atkop)
@@ -82,3 +82,4 @@ function c13482075.atkop(e,tp,eg,ep,ev,re,r,rp)
 		tc:RegisterEffect(e2)
 	end
 end
+

@@ -42,10 +42,10 @@ end
 function c100223081.desreptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	local c=e:GetHandler()
 	if chk==0 then return not c:IsReason(REASON_REPLACE) and (c:IsReason(REASON_BATTLE) or rp~=tp)
-		and Duel.IsExistingMatchingCard(Card.IsStatus,tp,LOCATION_ONFIELD,0,1,c,STATUS_BATTLE_DESTROYED) end
+		and Duel.IsExistingMatchingCard(aux.NOT(Card.IsStatus),tp,LOCATION_ONFIELD,0,1,c,STATUS_BATTLE_DESTROYED) end
 	if Duel.SelectEffectYesNo(tp,e:GetHandler(),96) then
 		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-		local g=Duel.SelectMatchingCard(tp,Card.IsStatus,tp,LOCATION_ONFIELD,0,1,1,c,STATUS_BATTLE_DESTROYED)
+		local g=Duel.SelectMatchingCard(tp,aux.NOT(Card.IsStatus),tp,LOCATION_ONFIELD,0,1,1,c,STATUS_BATTLE_DESTROYED)
 		Duel.SendtoGrave(g,REASON_EFFECT+REASON_REPLACE)
 		return true
 	else return false end

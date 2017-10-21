@@ -16,3 +16,4 @@ function c1482001.spcost(e,c,tp,st)
 	if bit.band(st,SUMMON_TYPE_LINK)~=SUMMON_TYPE_LINK then return true end
 	return Duel.GetCurrentPhase()==PHASE_MAIN2
 end
+

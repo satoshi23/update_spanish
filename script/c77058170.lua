@@ -46,3 +46,4 @@ function c77058170.atkop(e,tp,eg,ep,ev,re,r,rp)
 		tc2:RegisterEffect(e1)
 	end
 end
+

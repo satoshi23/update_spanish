@@ -15,3 +15,4 @@ function c49847524.initial_effect(c)
 	e1:SetValue(800)
 	c:RegisterEffect(e1)
 end
+

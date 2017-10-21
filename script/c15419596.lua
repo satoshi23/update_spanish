@@ -72,3 +72,4 @@ function c15419596.aclimit(e,re,tp)
 	local tc=re:GetHandler()
 	return tc:IsLocation(LOCATION_MZONE) and re:IsActiveType(TYPE_MONSTER) and e:GetHandler():GetColumnGroup():IsContains(tc) and not tc:IsImmuneToEffect(e)
 end
+

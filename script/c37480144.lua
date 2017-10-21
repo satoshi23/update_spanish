@@ -29,3 +29,4 @@ function c37480144.activate(e,tp,eg,ep,ev,re,r,rp)
 	local nseq=math.log(s,2)
 	Duel.MoveSequence(tc,nseq)
 end
+

@@ -98,3 +98,4 @@ function c63092423.ctop2(e,tp,eg,ep,ev,re,r,rp)
 		c:AddCounter(0x44,1)
 	end
 end
+

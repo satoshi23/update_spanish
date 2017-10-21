@@ -103,3 +103,4 @@ function c36668118.spop2(e,tp,eg,ep,ev,re,r,rp)
 	end
 	Duel.SpecialSummon(sg,0,tp,tp,false,false,POS_FACEUP_DEFENSE)
 end
+

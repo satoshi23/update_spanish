@@ -100,3 +100,4 @@ end
 function c49655592.excon(e)
     return e:GetHandler():IsLevelAbove(7)
 end
+

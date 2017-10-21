@@ -17,7 +17,7 @@ function c38532954.initial_effect(c)
 	e2:SetType(EFFECT_TYPE_IGNITION)
 	e2:SetRange(LOCATION_GRAVE)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
-	e2:SetCountLimit(1,38532954+100)
+	e2:SetCountLimit(1,38532955)
 	e2:SetCondition(aux.exccon)
 	e2:SetCost(aux.bfgcost)
 	e2:SetTarget(c38532954.sptg)
@@ -67,3 +67,4 @@ function c38532954.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
+

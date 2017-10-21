@@ -56,3 +56,4 @@ end
 function c40669071.tgtg(e,c)
 	return e:GetHandler():GetLinkedGroup():IsContains(c)
 end
+

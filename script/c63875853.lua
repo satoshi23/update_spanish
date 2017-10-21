@@ -21,3 +21,4 @@ function c63875853.activate(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SetLP(1-tp,lp1)
 	end
 end
+

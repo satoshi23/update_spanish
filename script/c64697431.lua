@@ -24,3 +24,4 @@ function c64697431.activate(e,tp,eg,ep,ev,re,r,rp)
 	local sg=Duel.GetMatchingGroup(c64697431.filter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,e:GetHandler())
 	Duel.SendtoHand(sg,nil,REASON_EFFECT)
 end
+

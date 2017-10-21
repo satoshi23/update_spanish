@@ -19,3 +19,4 @@ function c29185231.activate(e,tp,eg,ep,ev,re,r,rp)
 	Duel.SkipPhase(turnp,PHASE_BATTLE,RESET_PHASE+PHASE_END,1,1)
 	Duel.SkipPhase(turnp,PHASE_MAIN2,RESET_PHASE+PHASE_END,1)
 end
+

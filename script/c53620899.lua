@@ -48,3 +48,4 @@ function c53620899.posop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ChangePosition(c,POS_FACEDOWN_DEFENSE)
 	end
 end
+

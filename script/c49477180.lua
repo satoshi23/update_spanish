@@ -90,3 +90,4 @@ function c49477180.drop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.DiscardHand(tp,nil,1,1,REASON_EFFECT+REASON_DISCARD)
 	end
 end
+

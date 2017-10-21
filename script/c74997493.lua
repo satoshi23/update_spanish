@@ -2,16 +2,8 @@
 --Skulldeat, the Chained Dracoserpent
 --Script by nekrozar
 function c74997493.initial_effect(c)
-	--link summon
-	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD)
-	e1:SetProperty(EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE)
-	e1:SetCode(EFFECT_SPSUMMON_PROC)
-	e1:SetRange(LOCATION_EXTRA)
-	e1:SetCondition(c74997493.lkcon)
-	e1:SetOperation(c74997493.lkop)
-	e1:SetValue(SUMMON_TYPE_LINK)
-	c:RegisterEffect(e1)
+	c:EnableReviveLimit()
+	aux.AddLinkProcedure(c,nil,2,nil,c74997493.lkcheck)
 	--effect gain
 	local e2=Effect.CreateEffect(c)
 	e2:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_CONTINUOUS)
@@ -31,52 +23,8 @@ function c74997493.initial_effect(c)
 	e3:SetOperation(c74997493.drop)
 	c:RegisterEffect(e3)
 end
-function c74997493.matfilter(c,lc,tp)
-	return c:IsFaceup() and c:IsCanBeLinkMaterial(lc)
-end
-function c74997493.lkcheck(c,sg)
-	return sg:FilterCount(c74997493.lkcheck2,c,c)+1==sg:GetCount()
-end
-function c74997493.lkcheck2(c,mc)
-	return not c:IsCode(mc:IsCode())
-end
-function c74997493.lkgoal(c,tp,lc,ct,sg)
-	return sg:GetCount()>1 and sg:CheckWithSumEqual(aux.GetLinkCount,lc:GetLink(),ct,ct)
-		and Duel.GetLocationCountFromEx(tp,tp,sg,lc)>0 and sg:IsExists(c74997493.lkcheck,1,nil,sg)
-end
-function c74997493.lkselect(c,tp,lc,ct,mg,sg)
-	sg:AddCard(c)
-	ct=ct+1
-	local res=c74997493.lkgoal(c,tp,lc,ct,sg) or mg:IsExists(c74997493.lkselect,1,sg,tp,lc,ct,mg,sg)
-	sg:RemoveCard(c)
-	return res
-end
-function c74997493.lkcon(e,c)
-	if c==nil then return true end
-	if c:IsType(TYPE_PENDULUM) and c:IsFaceup() then return false end
-	local tp=c:GetControler()
-	local mg=Duel.GetMatchingGroup(c74997493.matfilter,tp,LOCATION_MZONE,0,nil,c,tp)
-	local sg=Group.CreateGroup()
-	return mg:IsExists(c74997493.lkselect,1,nil,tp,c,0,mg,sg)
-end
-function c74997493.lkop(e,tp,eg,ep,ev,re,r,rp,c)
-	local mg=Duel.GetMatchingGroup(c74997493.matfilter,tp,LOCATION_MZONE,0,nil,c,tp)
-	local sg=Group.CreateGroup()
-	for i=0,98 do
-		local cg=mg:Filter(c74997493.lkselect,sg,tp,c,i,mg,sg)
-		if cg:GetCount()==0 then break end
-		local minct=1
-		if c74997493.lkgoal(c,tp,c,i,sg) then
-			if not Duel.SelectYesNo(tp,210) then break end
-			minct=0
-		end
-		Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_TOGRAVE)
-		local g=cg:Select(tp,minct,1,nil)
-		if g:GetCount()==0 then break end
-		sg:Merge(g)
-	end
-	c:SetMaterial(sg)
-	Duel.SendtoGrave(sg,REASON_MATERIAL+REASON_LINK)
+function c74997493.lkcheck(g,lc,tp)
+	return g:GetClassCount(Card.GetCode)==g:GetCount()
 end
 function c74997493.regcon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)
@@ -182,3 +130,4 @@ function c74997493.drop(e,tp,eg,ep,ev,re,r,rp)
 		end
 	end
 end
+

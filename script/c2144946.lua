@@ -35,7 +35,7 @@ function c2144946.initial_effect(c)
 	e4:SetType(EFFECT_TYPE_SINGLE+EFFECT_TYPE_TRIGGER_O)
 	e4:SetCode(EVENT_DESTROYED)
 	e4:SetProperty(EFFECT_FLAG_DELAY)
-	e4:SetCountLimit(1,2144946+100)
+	e4:SetCountLimit(1,2144947)
 	e4:SetCondition(c2144946.thcon2)
 	e4:SetTarget(c2144946.thtg2)
 	e4:SetOperation(c2144946.thop2)
@@ -82,3 +82,4 @@ function c2144946.thop2(e,tp,eg,ep,ev,re,r,rp)
 		Duel.ConfirmCards(1-tp,g)
 	end
 end
+

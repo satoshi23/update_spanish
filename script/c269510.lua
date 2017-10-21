@@ -100,3 +100,4 @@ function c269510.atlimit(e,c)
 	return c:IsFaceup() and c:IsRace(RACE_CYBERSE)
 end
 
+

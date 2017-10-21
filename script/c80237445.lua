@@ -76,3 +76,4 @@ end
 function c80237445.splimit(e,c)
 	return not c:IsSetCard(0x97)
 end
+

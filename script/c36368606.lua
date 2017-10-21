@@ -85,3 +85,4 @@ end
 function c36368606.efilter(e,te,c)
 	return te:GetOwner()~=c
 end
+

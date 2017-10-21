@@ -10,7 +10,6 @@ function c53842431.initial_effect(c)
 	e1:SetCategory(CATEGORY_DESTROY+CATEGORY_TOHAND+CATEGORY_SEARCH)
 	e1:SetType(EFFECT_TYPE_IGNITION)
 	e1:SetRange(LOCATION_PZONE)
-	e1:SetProperty(EFFECT_FLAG_CARD_TARGET)
 	e1:SetCountLimit(1,53842431)
 	e1:SetCondition(c53842431.thcon)
 	e1:SetTarget(c53842431.thtg)
@@ -53,12 +52,11 @@ function c53842431.initial_effect(c)
 	e5:SetOperation(c53842431.rmop)
 	c:RegisterEffect(e5)
 end
-c53842431.spell_counter_permit=99
 function c53842431.thcon(e,tp,eg,ep,ev,re,r,rp)
 	return Duel.CheckLocation(tp,LOCATION_PZONE,0) or Duel.CheckLocation(tp,LOCATION_PZONE,1)
 end
 function c53842431.thfilter(c)
-	return (c:IsSetCard(0x209) or c:IsCode(55424270)) and c:IsLevelBelow(7)
+	return (c:IsSetCard(0x10d) or c:IsCode(55424270)) and c:IsLevelBelow(7)
 		and c:IsType(TYPE_EFFECT) and c:IsAbleToHand()
 end
 function c53842431.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
@@ -106,6 +104,7 @@ function c53842431.rmop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
 	if tc:IsRelateToEffect(e) and Duel.Remove(tc,POS_FACEUP,REASON_EFFECT)~=0 and c:IsFaceup() and c:IsRelateToEffect(e) then
 		local atk=tc:GetBaseAttack()
+		if atk<0 then atk=0 end
 		local e1=Effect.CreateEffect(c)
 		e1:SetType(EFFECT_TYPE_SINGLE)
 		e1:SetCode(EFFECT_UPDATE_ATTACK)
@@ -114,3 +113,4 @@ function c53842431.rmop(e,tp,eg,ep,ev,re,r,rp)
 		c:RegisterEffect(e1)
 	end
 end
+

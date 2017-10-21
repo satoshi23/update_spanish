@@ -72,3 +72,4 @@ end
 function c1118137.desrepop(e,tp,eg,ep,ev,re,r,rp)
 	Duel.RemoveCounter(tp,1,0,0x1,1,REASON_EFFECT+REASON_REPLACE)
 end
+

@@ -253,8 +253,7 @@ EFFECT_TYPE_QUICK_O			=0x0100		--诱发即时效果
 EFFECT_TYPE_TRIGGER_F		=0x0200		--诱发必发效果
 EFFECT_TYPE_QUICK_F			=0x0400		--诱发即时必发效果（熊猫龙等）
 EFFECT_TYPE_CONTINUOUS		=0x0800		--由事件觸發的輔助用效果/永續效果
-EFFECT_TYPE_XMATERIAL		=0x1000		--作为超量素材时超量怪兽获得的效果（十二兽）
-EFFECT_TYPE_GRANT			=0x2000		--使其他卡片获得效果（天气模样）
+EFFECT_TYPE_XMATERIAL		=0x1000		--
 --========== Flags ==========	--效果的特殊性质
 EFFECT_FLAG_INITIAL			=0x0001		--可以发动的
 EFFECT_FLAG_FUNC_VALUE		=0x0002		--此效果的Value属性是函数
@@ -345,7 +344,7 @@ EFFECT_CANNOT_DISCARD_HAND		=55		--不能丢弃手牌
 EFFECT_CANNOT_DISCARD_DECK		=56		--不能把卡组的卡送去墓地
 EFFECT_CANNOT_USE_AS_COST		=57		--不能作为COST使用
 EFFECT_CANNOT_PLACE_COUNTER		=58		--不能放置counter
-EFFECT_CANNOT_TO_GRAVE_AS_COST	=59		--不能作为COST送去墓地
+
 EFFECT_LEAVE_FIELD_REDIRECT		=60		--离场时重新指定去向
 EFFECT_TO_HAND_REDIRECT			=61		--回手牌时重新指定去向
 EFFECT_TO_DECK_REDIRECT			=62		--回卡组时重新指定去向
@@ -493,7 +492,7 @@ EFFECT_UNIQUE_CHECK				=297	--場上只能存在1張(Card.SetUniqueOnField()專�
 EFFECT_MATCH_KILL				=300	--Match胜利(胜利龙)
 EFFECT_SYNCHRO_CHECK			=310	--基因组斗士
 EFFECT_QP_ACT_IN_NTPHAND		=311	--对方回合从自己手卡发动（失乐的圣女）
-EFFECT_MUST_BE_MATERIAL			=312
+EFFECT_MUST_BE_SMATERIAL		=312	--必须作为同调素材（波动龙 声子龙）
 EFFECT_TO_GRAVE_REDIRECT_CB		=313	--重新指定去向(寶玉獸)
 EFFECT_CHANGE_LEVEL_FINAL		=314	--設定最終等級(銀河女王之光)
 EFFECT_CHANGE_RANK_FINAL		=315	--設定最終階級
@@ -706,8 +705,6 @@ HINTMSG_TOFIELD			=527	--请选择要放置到场上的卡
 HINTMSG_POSCHANGE		=528	--请选择要改变表示形式的怪兽
 HINTMSG_SELF			=529	--请选择自己的卡
 HINTMSG_OPPO			=530	--请选择对方的卡
-HINTMSG_TRIBUTE			=531	--请选择上级召唤用需要解放的怪兽
-HINTMSG_DEATTACHFROM	=532	--请选择要取除超量素材的怪兽
 HINTMSG_ATTACKTARGET	=549	--请选择攻击的对象
 HINTMSG_EFFECT			=550	--请选择要发动的效果
 HINTMSG_TARGET			=551	--请选择效果的对象
@@ -715,7 +712,6 @@ HINTMSG_COIN			=552	--请选择硬币的正反面
 HINTMSG_DICE			=553	--请选择骰子的结果
 HINTMSG_CARDTYPE		=554	--请选择一个种类
 HINTMSG_OPTION			=555	--请选择一个选项
-HINTMSG_RESOLVEEFFECT	=556	--请选择要发动/处理的效果
 HINTMSG_SELECT			=560	--请选择
 HINTMSG_POSITION		=561	--请选择表示形式
 HINTMSG_ATTRIBUTE		=562	--请选择要宣言的属性
@@ -723,10 +719,6 @@ HINTMSG_RACE			=563	--请选择要宣言的种族
 HINTMSG_CODE			=564	--请宣言一个卡名
 HINGMSG_NUMBER			=565	--请选择一个数字
 HINGMSG_LVRANK			=567	--请宣言一个等级
-HINTMSG_RESOLVECARD		=568	--请选择要处理效果的卡
-HINTMSG_ZONE			=569	--请选择[%ls]的位置
-HINTMSG_DISABLEZONE		=570	--请选择要变成不能使用的卡片区域
-HINTMSG_TOZONE			=571	--请选择要移动到的位置
 --Select	--请选择
 SELECT_HEADS				=60	--正面
 SELECT_TAILS				=61	--反面
@@ -785,7 +777,6 @@ DUEL_OBSOLETE_RULING	=0x08		--使用舊規則
 DUEL_PSEUDO_SHUFFLE		=0x10		--不洗牌
 DUEL_TAG_MODE			=0x20		--双打PP
 DUEL_SIMPLE_AI			=0x40		--AI(用于残局)
-SPEED_DUEL				=0x80
 --Activity counter
 --global: 1-6 (binary: 5,6)
 --custom: 1-5,7 (binary: 1-5)
