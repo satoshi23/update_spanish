@@ -12,7 +12,7 @@ function c100000196.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 function c100000196.tg(e,tp,eg,ep,ev,re,r,rp,tc)
-	Duel.Hint(HINT_SELECTMSG,tp,562)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATTRIBUTE)
 	local rc=Duel.AnnounceAttribute(tp,1,0xffff)
 	e:GetHandler():RegisterFlagEffect(10000196,RESET_EVENT+0x1fe0000,0,1,rc)
 	e:GetHandler():SetHint(CHINT_ATTRIBUTE,rc)

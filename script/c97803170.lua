@@ -11,7 +11,7 @@ function c97803170.initial_effect(c)
 	c:RegisterEffect(e1)
 	--special summon
 	local e2=Effect.CreateEffect(c)
-	e2:SetDescription(aux.Stringid(35125879,0))
+	e2:SetDescription(aux.Stringid(97803170,0))
 	e2:SetCategory(CATEGORY_SPECIAL_SUMMON+CATEGORY_TOGRAVE)
 	e2:SetType(EFFECT_TYPE_QUICK_O)
 	e2:SetProperty(EFFECT_FLAG_CARD_TARGET)
@@ -37,7 +37,7 @@ function c97803170.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 		e:SetProperty(EFFECT_FLAG_CARD_TARGET)
 		e:SetOperation(c97803170.spop)
 		c97803170.cost(e,tp,eg,ep,ev,re,r,rp,1)
-		c97803170.sptg(e,tp,eg,ep,ev,re,r,rp,1)		
+		c97803170.sptg(e,tp,eg,ep,ev,re,r,rp,1)
 	else
 		e:SetCategory(0)
 		e:SetProperty(0)
@@ -63,9 +63,8 @@ end
 function c97803170.spop(e,tp,eg,ep,ev,re,r,rp)
 	if not e:GetHandler():IsRelateToEffect(e) then return end
 	local tc=Duel.GetFirstTarget()
-	if Duel.GetLocationCount(tp,LOCATION_MZONE)<1 or not tc:IsRelateToEffect(e) then return end
-	if Duel.DiscardHand(tp,c97803170.cfilter,1,1,REASON_EFFECT,nil)~=0 then
+	if Duel.DiscardHand(tp,c97803170.cfilter,1,1,REASON_EFFECT+REASON_DISCARD,nil)~=0 then
+		if Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 or not tc:IsRelateToEffect(e) then return end
 		Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
-

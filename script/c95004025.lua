@@ -26,15 +26,48 @@ end
 function c95004025.otfilter(c)
 	return c:IsType(TYPE_CONTINUOUS) and c:IsReleasable()
 end
+function c95004025.val(c,sc,ma)
+	local eff3={c:GetCardEffect(EFFECT_TRIPLE_TRIBUTE)}
+	if ma>=3 then
+		for _,te in ipairs(eff3) do
+			if te:GetValue()(te,sc) then return 0x30001 end
+		end
+	end
+	local eff2={c:GetCardEffect(EFFECT_DOUBLE_TRIBUTE)}
+	for _,te in ipairs(eff2) do
+		if te:GetValue()(te,sc) then return 0x20001 end
+	end
+	return 1
+end
+function c95004025.req(c)
+	return c:IsType(TYPE_CONTINUOUS) and c:IsLocation(LOCATION_SZONE)
+end
+function c95004025.rescon(sg,e,tp,mg)
+	local c=e:GetHandler()
+	local mi,ma=c:GetTributeRequirement()
+	if mi<1 then mi=ma end
+	if not sg:IsExists(c95004025.req,1,nil) or not aux.ChkfMMZ(1)(sg,e,tp,mg) then return false end
+	local ct=sg:GetCount()
+	return sg:CheckWithSumEqual(c95004025.val,mi,ct,ct,c,ma) or sg:CheckWithSumEqual(c95004025.val,ma,ct,ct,c,ma)
+end
 function c95004025.otcon(e,c,minc)
 	if c==nil then return true end
 	local tp=c:GetControler()
-	return c:GetLevel()>4 and minc<=1 and Duel.GetLocationCount(tp,LOCATION_MZONE)>0
-		and Duel.IsExistingMatchingCard(c95004025.otfilter,tp,LOCATION_SZONE,0,1,nil)
+	local g=Duel.GetTributeGroup(c)
+	local exg=Duel.GetMatchingGroup(c95004025.otfilter,tp,LOCATION_SZONE,0,nil)
+	g:Merge(exg)
+	local mi,ma=c:GetTributeRequirement()
+	if mi<minc then mi=minc end
+	if ma<mi then return false end
+	return ma>0 and Duel.GetLocationCount(tp,LOCATION_MZONE)>-ma and aux.SelectUnselectGroup(g,e,tp,1,ma,c95004025.rescon,0)
 end
 function c95004025.otop(e,tp,eg,ep,ev,re,r,rp,c)
-	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_RELEASE)
-	local sg=Duel.SelectMatchingCard(tp,c95004025.otfilter,tp,LOCATION_SZONE,0,1,1,nil)
+	local g=Duel.GetTributeGroup(c)
+	local exg=Duel.GetMatchingGroup(c95004025.otfilter,tp,LOCATION_SZONE,0,nil)
+	g:Merge(exg)
+	local mi,ma=c:GetTributeRequirement()
+	if mi<1 then mi=1 end
+	local sg=aux.SelectUnselectGroup(g,e,tp,mi,ma,c95004025.rescon,1,tp,HINTMSG_RELEASE)
 	c:SetMaterial(sg)
 	Duel.Release(sg,REASON_SUMMON+REASON_MATERIAL)
 end

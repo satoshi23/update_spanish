@@ -62,26 +62,54 @@ function c100000475.activate(e,tp,eg,ep,ev,re,r,rp)
 		end
 		tc:CompleteProcedure()
 	end
+	local c=e:GetHandler()
 	if e:IsHasType(EFFECT_TYPE_ACTIVATE) then
-		local e1=Effect.CreateEffect(e:GetHandler())
+		local res
+		local e1=Effect.CreateEffect(c)
 		e1:SetCategory(CATEGORY_TOHAND)
 		e1:SetType(EFFECT_TYPE_IGNITION)
 		e1:SetRange(LOCATION_GRAVE)
 		if Duel.GetTurnPlayer()==tp then
-			e1:SetReset(RESET_EVENT+0x17a0000+RESET_PHASE+PHASE_END+RESET_SELF_TURN,3)
+			res=3
 			e1:SetLabel(Duel.GetTurnCount())
 		else
-			e1:SetReset(RESET_EVENT+0x17a0000+RESET_PHASE+PHASE_END+RESET_SELF_TURN,2)
+			res=2
 			e1:SetLabel(Duel.GetTurnCount()-1)
 		end
+		e:SetValue(4)
 		e1:SetCondition(c100000475.thcon)
 		e1:SetTarget(c100000475.thtg)
 		e1:SetOperation(c100000475.thop)
-		e:GetHandler():RegisterEffect(e1)
+		e1:SetReset(RESET_EVENT+0x17a0000+RESET_PHASE+PHASE_END+RESET_SELF_TURN,res)
+		c:RegisterEffect(e1)
+		local e2=Effect.CreateEffect(c)
+		e2:SetType(EFFECT_TYPE_SINGLE)
+		e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
+		e2:SetCode(1082946)
+		e2:SetLabelObject(e1)
+		e2:SetOperation(c100000475.reset)
+		e2:SetReset(RESET_EVENT+0x17a0000+RESET_PHASE+PHASE_END+RESET_SELF_TURN,res)
+		c:RegisterEffect(e2)
+	end
+end
+function c100000475.reset(e,tp,eg,ep,ev,re,r,rp)
+	local te=e:GetLabelObject()
+	local val=te:GetValue()
+	if Duel.GetTurnCount()==te:GetLabel()+val then
+		e:GetHandler():SetTurnCounter(3)
+		e:Reset() te:Reset()
+	else
+		val=val-2
+		if Duel.GetTurnCount()==te:GetLabel()+val then
+			e:GetHandler():SetTurnCounter(2)
+		elseif Duel.GetTurnCount()==te:GetLabel()+val-2 then
+			e:GetHandler():SetTurnCounter(1)
+		end
+		te:SetValue(val)
 	end
 end
 function c100000475.thcon(e,tp,eg,ep,ev,re,r,rp)
-	return Duel.GetTurnCount()==e:GetLabel()+4
+	return Duel.GetTurnCount()==e:GetLabel()+e:GetValue()
 end
 function c100000475.thtg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToHand() end

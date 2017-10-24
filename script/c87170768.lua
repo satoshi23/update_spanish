@@ -42,3 +42,4 @@ function c87170768.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(c,0,tp,1-tp,false,false,POS_FACEUP_DEFENSE)
 	end
 end
+

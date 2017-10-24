@@ -24,7 +24,7 @@ function c75059201.initial_effect(c)
 	e3:SetProperty(EFFECT_FLAG_IGNORE_IMMUNE)
 	e3:SetRange(LOCATION_MZONE)
 	e3:SetTargetRange(LOCATION_MZONE,LOCATION_MZONE)
-	e3:SetTarget(c75059201.tglimit)
+	e3:SetTarget(c75059201.atglimit)
 	e3:SetValue(c75059201.tgval)
 	c:RegisterEffect(e3)
 	--lv up

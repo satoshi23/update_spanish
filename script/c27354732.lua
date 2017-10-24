@@ -53,7 +53,7 @@ function c27354732.spfilter(c,e,tp)
 		and not c:IsCode(27354732) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end
 function c27354732.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return e:GetHandler():IsDestructable()	and Duel.GetLocationCountFromEx(tp)>0
+	if chk==0 then return e:GetHandler():IsDestructable() and Duel.GetLocationCountFromEx(tp)>0
 		and Duel.IsExistingTarget(c27354732.spfilter,tp,LOCATION_EXTRA,0,1,nil,e,tp) end
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,e:GetHandler(),1,0,0)
 	Duel.SetOperationInfo(0,CATEGORY_SPECIAL_SUMMON,nil,1,tp,LOCATION_EXTRA)
@@ -96,3 +96,4 @@ function c27354732.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Destroy(eg,REASON_EFFECT)
 	end
 end
+

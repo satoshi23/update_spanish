@@ -50,7 +50,7 @@ function c66938505.scop(e,tp,eg,ep,ev,re,r,rp)
 	e2:SetCode(EFFECT_DISABLE_EFFECT)
 	tc:RegisterEffect(e2)
 	Duel.SpecialSummonComplete()
-	if not c:IsRelateToEffect(e) then return end
+	if not c:IsRelateToEffect(e) or c:IsFacedown() then return end
 	local mg=Group.FromCards(c,tc)
 	local g=Duel.GetMatchingGroup(c66938505.scfilter2,tp,LOCATION_EXTRA,0,nil,mg)
 	if g:GetCount()>0 then

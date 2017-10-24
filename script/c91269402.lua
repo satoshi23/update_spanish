@@ -2,11 +2,11 @@
 function c91269402.initial_effect(c)
 	--Activate
 	local e1=Effect.CreateEffect(c)
-	e1:SetCategory(CATEGORY_SEARCH+CATEGORY_TODECK)
+	e1:SetCategory(CATEGORY_SEARCH+CATEGORY_TOHAND)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetHintTiming(TIMING_END_PHASE)
-	e1:SetCountLimit(1,91269402)
+	e1:SetCountLimit(1,91269402+EFFECT_COUNT_CODE_OATH)
 	e1:SetCondition(c91269402.condition)
 	e1:SetTarget(c91269402.target)
 	e1:SetOperation(c91269402.activation)

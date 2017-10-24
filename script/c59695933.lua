@@ -11,10 +11,13 @@ function c59695933.initial_effect(c)
 	e1:SetOperation(c59695933.activate)
 	c:RegisterEffect(e1)
 end
+function c59695933.cfilter(c)
+	return bit.band(c:GetPreviousTypeOnField(),TYPE_MONSTER)==TYPE_MONSTER
+end
 function c59695933.condition(e,tp,eg,ep,ev,re,r,rp)
 	local tc=eg:GetFirst()
 	return tc:IsSummonType(SUMMON_TYPE_ADVANCE)
-		and tc:GetMaterialCount()==1
+		and tc:GetMaterial():FilterCount(c59695933.cfilter,nil)==1
 end
 function c59695933.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	if chkc then return false end

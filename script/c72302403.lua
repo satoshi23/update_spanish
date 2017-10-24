@@ -23,11 +23,12 @@ function c72302403.initial_effect(c)
 end
 function c72302403.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:IsHasType(EFFECT_TYPE_ACTIVATE) end
-	e:GetHandler():SetTurnCounter(0)
+	local c=e:GetHandler()
+	c:SetTurnCounter(0)
 	local sg=Duel.GetMatchingGroup(Card.IsFacedown,tp,0,LOCATION_MZONE,nil)
 	Duel.SetOperationInfo(0,CATEGORY_POSITION,sg,sg:GetCount(),0,0)
 	--destroy
-	local e1=Effect.CreateEffect(e:GetHandler())
+	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 	e1:SetCode(EVENT_PHASE+PHASE_END)
@@ -36,9 +37,19 @@ function c72302403.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	e1:SetCondition(c72302403.descon)
 	e1:SetOperation(c72302403.desop)
 	e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END+RESET_OPPO_TURN,3)
-	e:GetHandler():RegisterEffect(e1)
-	e:GetHandler():RegisterFlagEffect(1082946,RESET_PHASE+PHASE_END+RESET_OPPO_TURN,0,3)
-	c72302403[e:GetHandler()]=e1
+	c:RegisterEffect(e1)
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_SINGLE)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
+	e3:SetCode(1082946)
+	e3:SetLabelObject(e1)
+	e3:SetOwnerPlayer(tp)
+	e3:SetOperation(c72302403.reset)
+	e3:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END+RESET_OPPO_TURN,3)
+	c:RegisterEffect(e3)
+end
+function c72302403.reset(e,tp,eg,ep,ev,re,r,rp)
+	c72302403.desop(e:GetLabelObject(),tp,eg,ep,ev,e,r,rp)
 end
 function c72302403.activate(e,tp,eg,ep,ev,re,r,rp)
 	local sg=Duel.GetMatchingGroup(Card.IsFacedown,tp,0,LOCATION_MZONE,nil)
@@ -56,6 +67,6 @@ function c72302403.desop(e,tp,eg,ep,ev,re,r,rp)
 	c:SetTurnCounter(ct)
 	if ct==3 then
 		Duel.Destroy(c,REASON_RULE)
-		c:ResetFlagEffect(1082946)
+		if re and re.Reset then re:Reset() end
 	end
 end

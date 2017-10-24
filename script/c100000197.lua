@@ -20,10 +20,10 @@ function c100000197.initial_effect(c)
 	e1:SetLabelObject(e2)
 end
 function c100000197.tg(e,tp,eg,ep,ev,re,r,rp,tc)
-	Duel.Hint(HINT_SELECTMSG,tp,562)
-	local rc=Duel.AnnounceAttribute(tp,1,0xffff)
-	e:GetHandler():RegisterFlagEffect(10000197,RESET_EVENT+0x1fe0000,0,1,rc)
-	e:GetHandler():SetHint(CHINT_ATTRIBUTE,rc)
+	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_ATTRIBUTE)
+	local att=Duel.AnnounceAttribute(tp,1,0xffff)
+	e:GetHandler():RegisterFlagEffect(10000197,RESET_EVENT+0x1fe0000,0,1,att)
+	e:GetHandler():SetHint(CHINT_ATTRIBUTE,att)
 end
 function c100000197.desopchk(e,tp,eg,ep,ev,re,r,rp)
 	if e:GetHandler():GetFlagEffect(10000197)>0 then

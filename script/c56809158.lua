@@ -24,25 +24,33 @@ function c56809158.initial_effect(c)
 	e3:SetOperation(c56809158.operation)
 	c:RegisterEffect(e3)
 end
-function c56809158.cfilter(c)
-	return c:GetColumnGroupCount()>0
+function c56809158.cfilter(c,tp,seq)
+	local s=c:GetSequence()
+	if c:IsLocation(LOCATION_SZONE) and s==5 then return false end
+	if c:IsControler(tp) then
+		return s==seq or (seq==1 and s==5) or (seq==3 and s==6)
+	else
+		return s==4-seq or (seq==1 and s==6) or (seq==3 and s==5)
+	end
 end
 function c56809158.hspcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
 	local zone=0
-	local lg=Duel.GetMatchingGroup(c56809158.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
-	for tc in aux.Next(lg) do
-		zone=bit.bor(zone,tc:GetColumnZone(LOCATION_MZONE,0,0,tp))
+	for i=0,4 do
+		if Duel.GetMatchingGroupCount(c56809158.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,tp,i)>=2 then
+			zone=zone+math.pow(2,i)
+		end
 	end
 	return Duel.GetLocationCount(tp,LOCATION_MZONE,tp,LOCATION_REASON_TOFIELD,zone)>0
 end
 function c56809158.hspval(e,c)
 	local tp=c:GetControler()
 	local zone=0
-	local lg=Duel.GetMatchingGroup(c56809158.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
-	for tc in aux.Next(lg) do
-		zone=bit.bor(zone,tc:GetColumnZone(LOCATION_MZONE,0,0,tp))
+	for i=0,4 do
+		if Duel.GetMatchingGroupCount(c56809158.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,tp,i)>=2 then
+			zone=zone+math.pow(2,i)
+		end
 	end
 	return 0,zone
 end
@@ -55,16 +63,16 @@ function c56809158.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 	local g=Duel.SelectMatchingCard(tp,c56809158.costfilter,tp,LOCATION_GRAVE,0,1,1,nil)
 	Duel.Remove(g,POS_FACEUP,REASON_COST)
 end
-function c56809158.filter(c,g,mc)
-  return c:IsFaceup() and (g:IsContains(c) or c==mc)
+function c56809158.filter(c,g)
+  return c:IsFaceup() and g:IsContains(c)
 end
 function c56809158.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	local c=e:GetHandler()
 	local cg=c:GetColumnGroup()
-	if chkc then return c56809158.filter(chkc,cg,c) and chkc:IsLocation(LOCATION_MZONE) end
-	if chk==0 then return Duel.IsExistingTarget(c56809158.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,nil,cg,c) end
+	if chkc then return c56809158.filter(chkc,cg) and chkc:IsLocation(LOCATION_MZONE) and chkc~=c end
+	if chk==0 then return Duel.IsExistingTarget(c56809158.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,c,cg) end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)
-	local g=Duel.SelectTarget(tp,c56809158.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,nil,cg,c)
+	local g=Duel.SelectTarget(tp,c56809158.filter,tp,LOCATION_MZONE,LOCATION_MZONE,1,1,c,cg)
 	Duel.SetOperationInfo(0,CATEGORY_DESTROY,g,1,0,0)
 end
 function c56809158.operation(e,tp,eg,ep,ev,re,r,rp)
@@ -73,3 +81,4 @@ function c56809158.operation(e,tp,eg,ep,ev,re,r,rp)
 		Duel.Destroy(tc,REASON_EFFECT)
 	end
 end
+

@@ -12,7 +12,7 @@ function c92204263.initial_effect(c)
 	e1:SetCondition(c92204263.hspcon)
 	e1:SetValue(c92204263.hspval)
 	c:RegisterEffect(e1)
-	--move
+	--banish & search
 	local e2=Effect.CreateEffect(c)
 	e2:SetDescription(aux.Stringid(92204263,0))
 	e2:SetType(EFFECT_TYPE_QUICK_O)
@@ -33,7 +33,12 @@ function c92204263.hspcon(e,c)
 	local zone=0
 	local lg=Duel.GetMatchingGroup(c92204263.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
 	for tc in aux.Next(lg) do
-		zone=bit.bor(zone,tc:GetColumnZone(LOCATION_MZONE,0,0,tp))
+		local z=tc:GetColumnZone(LOCATION_MZONE)
+		if tp==tc:GetControler() then
+			zone=bit.bor(zone,tc:GetColumnZone(LOCATION_MZONE))
+		else
+			zone=bit.bor(zone,bit.bor(bit.rshift(bit.band(z,0x1f0000),16),bit.lshift(bit.band(z,0x1f),16)))
+		end
 	end
 	return Duel.GetLocationCount(tp,LOCATION_MZONE,tp,LOCATION_REASON_TOFIELD,zone)>0
 end
@@ -42,7 +47,12 @@ function c92204263.hspval(e,c)
 	local zone=0
 	local lg=Duel.GetMatchingGroup(c92204263.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
 	for tc in aux.Next(lg) do
-		zone=bit.bor(zone,tc:GetColumnZone(LOCATION_MZONE,0,0,tp))
+		local z=tc:GetColumnZone(LOCATION_MZONE)
+		if tp==tc:GetControler() then
+			zone=bit.bor(zone,tc:GetColumnZone(LOCATION_MZONE))
+		else
+			zone=bit.bor(zone,bit.bor(bit.rshift(bit.band(z,0x1f0000),16),bit.lshift(bit.band(z,0x1f),16)))
+		end
 	end
 	return 0,zone
 end
@@ -58,9 +68,11 @@ function c92204263.seqtg(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 end
 function c92204263.seqop(e,tp,eg,ep,ev,re,r,rp)
 	local tc=Duel.GetFirstTarget()
-	if not tc:IsRelateToEffect(e) or tc:IsControler(1-tp) or Duel.GetLocationCount(tp,LOCATION_MZONE)<=0 then return end
+	if not tc:IsRelateToEffect(e) or tc:IsControler(1-tp) or not (Duel.GetLocationCount(tp,LOCATION_MZONE)>0)then return end
+	local seq=tc:GetSequence()
 	Duel.Hint(HINT_SELECTMSG,tp,571)
 	local s=Duel.SelectDisableField(tp,1,LOCATION_MZONE,0,0)
 	local nseq=math.log(s,2)
 	Duel.MoveSequence(tc,nseq)
 end
+

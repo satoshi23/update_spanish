@@ -38,7 +38,7 @@ function c27873305.target(e,tp,eg,ep,ev,re,r,rp,chk,chkc)
 	Duel.SetOperationInfo(0,CATEGORY_EQUIP,nil,1,1-tp,LOCATION_MZONE)
 end
 function c27873305.equipop(c,e,tp,tc)
-	local atk=ec:GetTextAttack()
+	local atk=tc:GetTextAttack()
 	if atk<0 then atk=0 end
 	if not aux.EquipByEffectAndLimitRegister(c,e,tp,tc) then return end
 	if atk>0 then
@@ -48,7 +48,7 @@ function c27873305.equipop(c,e,tp,tc)
 		e2:SetCode(EFFECT_UPDATE_ATTACK)
 		e2:SetReset(RESET_EVENT+0x1fe0000)
 		e2:SetValue(atk)
-		ec:RegisterEffect(e2)
+		tc:RegisterEffect(e2)
 	end
 end
 function c27873305.operation(e,tp,eg,ep,ev,re,r,rp)

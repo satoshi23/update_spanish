@@ -25,38 +25,42 @@ function c93020401.initial_effect(c)
 	e2:SetOperation(c93020401.spop)
 	c:RegisterEffect(e2)
 end
-function c93020401.cfilter(c)
-	return c:GetColumnGroupCount()>0
+function c93020401.cfilter(c,tp,seq)
+	local s=c:GetSequence()
+	if c:IsLocation(LOCATION_SZONE) and s==5 then return false end
+	if c:IsControler(tp) then
+		return s==seq or (seq==1 and s==5) or (seq==3 and s==6)
+	else
+		return s==4-seq or (seq==1 and s==6) or (seq==3 and s==5)
+	end
 end
 function c93020401.hspcon(e,c)
 	if c==nil then return true end
 	local tp=c:GetControler()
 	local zone=0
-	local lg=Duel.GetMatchingGroup(c93020401.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
-	for tc in aux.Next(lg) do
-		zone=bit.bor(zone,tc:GetColumnZone(LOCATION_MZONE,0,0,tp))
+	for i=0,4 do
+		if Duel.GetMatchingGroupCount(c93020401.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,tp,i)>=2 then
+			zone=zone+math.pow(2,i)
+		end
 	end
 	return Duel.GetLocationCount(tp,LOCATION_MZONE,tp,LOCATION_REASON_TOFIELD,zone)>0
 end
 function c93020401.hspval(e,c)
 	local tp=c:GetControler()
 	local zone=0
-	local lg=Duel.GetMatchingGroup(c93020401.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil)
-	for tc in aux.Next(lg) do
-		zone=bit.bor(zone,tc:GetColumnZone(LOCATION_MZONE,0,0,tp))
+	for i=0,4 do
+		if Duel.GetMatchingGroupCount(c93020401.cfilter,tp,LOCATION_ONFIELD,LOCATION_ONFIELD,nil,tp,i)>=2 then
+			zone=zone+math.pow(2,i)
+		end
 	end
 	return 0,zone
 end
-function c93020401.spcfilter(c,tp,mc)
-	if c:GetPreviousControler()==tp then return false end
-	local loc=LOCATION_MZONE
-	if c:IsPreviousLocation(LOCATION_SZONE) then loc=LOCATION_SZONE end
-	local zone=mc:GetColumnZone(loc)
-	local seq=c:GetPreviousSequence()+16
-	return zone and bit.extract(zone,seq)~=0
+function c93020401.spcfilter(c,tp,seq)
+	local s=c:GetPreviousSequence()
+	return c:GetPreviousControler()~=tp and (s==4-seq or (seq==1 and s==6) or (seq==3 and s==5))
 end
 function c93020401.spcon(e,tp,eg,ep,ev,re,r,rp)
-	return eg:IsExists(c93020401.spcfilter,1,nil,tp,e:GetHandler())
+	return eg:IsExists(c93020401.spcfilter,1,nil,tp,e:GetHandler():GetSequence())
 end
 function c93020401.filter(c,e,tp)
 	return c:IsSetCard(0x10c) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
@@ -74,3 +78,4 @@ function c93020401.spop(e,tp,eg,ep,ev,re,r,rp)
 		Duel.SpecialSummon(g,0,tp,tp,false,false,POS_FACEUP)
 	end
 end
+

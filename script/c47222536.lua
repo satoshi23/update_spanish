@@ -26,7 +26,7 @@ function c47222536.initial_effect(c)
 	e3:SetCode(EVENT_SPSUMMON_SUCCESS)
 	c:RegisterEffect(e3)
 end
-c47222536.card_code_list={46986414}
+c47222536.listed_names={46986414}
 function c47222536.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetFieldGroupCount(tp,LOCATION_DECK,0)>2 end
 end

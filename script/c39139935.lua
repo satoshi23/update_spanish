@@ -47,7 +47,7 @@ function c39139935.operation(e,tp,eg,ep,ev,re,r,rp)
 				local e1=Effect.CreateEffect(c)
 				e1:SetType(EFFECT_TYPE_SINGLE)
 				e1:SetCode(EFFECT_UPDATE_ATTACK)
-				e1:SetValue(dif)
+				e1:SetValue(dam)
 				e1:SetReset(RESET_EVENT+0x1ff0000)
 				c:RegisterEffect(e1)
 			end

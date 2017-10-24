@@ -39,6 +39,3 @@ function c5645210.effectfilter(e,ct)
 	local te,tp,loc=Duel.GetChainInfo(ct,CHAININFO_TRIGGERING_EFFECT,CHAININFO_TRIGGERING_PLAYER,CHAININFO_TRIGGERING_LOCATION)
 	return p==tp and te:IsActiveType(TYPE_SPELL+TYPE_TRAP) and bit.band(loc,LOCATION_ONFIELD)~=0
 end
-function c5645210.distarget(e,c)
-	return c:IsType(TYPE_SPELL+TYPE_TRAP)
-end

@@ -19,7 +19,7 @@ function c67227834.initial_effect(c)
 	e4:SetOperation(c67227834.recop)
 	c:RegisterEffect(e4)
 end
-c67227834.card_code_list={46986414,38033121}
+c67227834.listed_names={46986414,38033121}
 function c67227834.reccon(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsPreviousLocation(LOCATION_ONFIELD)
 end

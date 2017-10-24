@@ -23,7 +23,7 @@ function c7922915.initial_effect(c)
 	e2:SetOperation(c7922915.negop)
 	c:RegisterEffect(e2)
 end
-c7922915.card_code_list={46986414}
+c7922915.listed_names={46986414}
 function c7922915.filter(c,e,tp)
 	return c:IsCode(46986414) and c:IsCanBeSpecialSummoned(e,0,tp,false,false)
 end

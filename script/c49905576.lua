@@ -13,7 +13,7 @@ function c49905576.envfilter(c)
 end
 function c49905576.drop(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if not re:GetHandler():IsType(TYPE_COUNTER) or not c:IsLocation(LOCATION_MZONE) or not c:IsFaceup() then return end
+	if not re:IsHasType(EFFECT_TYPE_ACTIVATE) or not re:IsActiveType(TYPE_COUNTER) or not c:IsLocation(LOCATION_MZONE) or not c:IsFaceup() then return end
 	Duel.Recover(tp,1000,REASON_EFFECT)
 	if not (Duel.IsExistingMatchingCard(c49905576.envfilter,e:GetHandlerPlayer(),LOCATION_ONFIELD,LOCATION_ONFIELD,1,nil) or Duel.IsEnvironment(56433456)) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_DESTROY)

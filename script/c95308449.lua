@@ -9,7 +9,6 @@ function c95308449.initial_effect(c)
 	c:RegisterEffect(e1)
 	if not c95308449.global_check then
 		c95308449.global_check=true
-		c95308449[0]={}
 		local ge1=Effect.CreateEffect(c)
 		ge1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 		ge1:SetCode(EVENT_TURN_END)
@@ -29,44 +28,62 @@ function c95308449.cost(e,tp,eg,ep,ev,re,r,rp,chk)
 end
 function c95308449.activate(e,tp,eg,ep,ev,re,r,rp)
 	local c=e:GetHandler()
-	if c:GetFlagEffect(95308449)~=0 then return end
-	c:RegisterFlagEffect(95308449,RESET_PHASE+PHASE_END,0,20)
 	local e1=Effect.CreateEffect(c)
-	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
+	e1:SetType(EFFECT_TYPE_FIELD)
+	e1:SetProperty(EFFECT_FLAG_PLAYER_TARGET+EFFECT_FLAG_CANNOT_DISABLE)
 	e1:SetCode(95308449)
-	e1:SetLabel(0)
 	e1:SetOperation(c95308449.checkop)
 	e1:SetCountLimit(1)
+	e1:SetLabel(0)
+	e1:SetValue(0)
+	e1:SetTargetRange(1,1)
 	e1:SetReset(RESET_PHASE+PHASE_END,20)
 	Duel.RegisterEffect(e1,tp)
-	c:RegisterFlagEffect(1082946,RESET_PHASE+PHASE_END,0,20)
-	c95308449[c]=e1
-	table.insert(c95308449[0],e1)
+	local descnum=tp==c:GetOwner() and 0 or 1
+	local e2=Effect.CreateEffect(c)
+	e2:SetType(EFFECT_TYPE_SINGLE)
+	e2:SetDescription(aux.Stringid(95308449,descnum))
+	e2:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
+	e2:SetCode(1082946)
+	e2:SetLabelObject(e1)
+	e2:SetOwnerPlayer(tp)
+	e2:SetOperation(c95308449.reset)
+	e2:SetReset(RESET_PHASE+PHASE_END,20)
+	c:RegisterEffect(e2)
+end
+function c95308449.reset(e,tp,eg,ep,ev,re,r,rp)
+	c95308449.checkop(e:GetLabelObject(),tp,eg,ep,ev,e,r,rp)
 end
 function c95308449.endop(e,tp,eg,ep,ev,re,r,rp)
-	for _,te in ipairs(c95308449[0]) do
+	local eff={Duel.GetPlayerEffect(tp,95308449)}
+	for _,te in ipairs(eff) do
 		c95308449.checkop(te,te:GetOwnerPlayer(),nil,0,0,0,0,0)
 	end
 	c95308449.winop(e,tp,eg,ep,ev,re,r,rp)
 end
 function c95308449.checkop(e,tp,eg,ep,ev,re,r,rp)
-	local ct=e:GetLabel()
+	local ct=e:GetValue()
 	ct=ct+1
 	e:GetHandler():SetTurnCounter(ct)
-	e:SetLabel(ct)
+	e:SetValue(ct)
 	if ct==20 then
-		e:GetHandler():ResetFlagEffect(1082946)
+		if re and re.Reset then re:Reset() end
 	end
 end
 function c95308449.winop(e,tp,eg,ep,ev,re,r,rp)
 	local t={}
 	t[0]=0
 	t[1]=0
-	for _,te in ipairs(c95308449[0]) do
+	local eff={Duel.GetPlayerEffect(tp,95308449)}
+	for _,te in ipairs(eff) do
 		local p=te:GetOwnerPlayer()
-		local ct=te:GetLabel()
+		local ct=te:GetValue()
 		if ct==20 then
 			t[p]=t[p]+1
+			local label=te:GetLabel()+1
+			if label==3 then
+				te:Reset()
+			end
 		end
 	end
 	if t[0]>0 or t[1]>0 then

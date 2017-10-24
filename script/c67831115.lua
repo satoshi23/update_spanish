@@ -40,8 +40,7 @@ function c67831115.initial_effect(c)
 	c:RegisterEffect(e5)
 end
 function c67831115.spfilter(c,e,tp)
-	return c:IsLevelBelow(2) and c:IsRace(RACE_INSECT)
-		and (c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE) or c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEDOWN_DEFENSE))
+	return c:IsLevelBelow(2) and c:IsRace(RACE_INSECT) and c:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_DEFENSE)
 end
 function c67831115.sptg(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return Duel.GetLocationCount(tp,LOCATION_MZONE)>0
@@ -51,18 +50,9 @@ end
 function c67831115.spop(e,tp,eg,ep,ev,re,r,rp)
 	if Duel.GetLocationCount(tp,LOCATION_MZONE)<1 or not e:GetHandler():IsRelateToEffect(e) then return end
 	Duel.Hint(HINT_SELECTMSG,tp,HINTMSG_SPSUMMON)
-	local g=Duel.SelectMatchingCard(tp,c67831115.spfilter,tp,LOCATION_HAND,0,1,1,nil,e,tp)
-	if g:GetCount()>0 then
-		local tc=g:GetFirst()
-		local spos=0
-		if tc:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEUP_DEFENSE) then spos=spos+POS_FACEUP_DEFENSE end
-		if tc:IsCanBeSpecialSummoned(e,0,tp,false,false,POS_FACEDOWN_DEFENSE) then spos=spos+POS_FACEDOWN_DEFENSE end
-		if spos~=0 then
-			Duel.SpecialSummon(tc,0,tp,tp,false,false,spos)
-			if tc:IsFacedown() then
-				Duel.ConfirmCards(1-tp,tc)
-			end
-		end
+	local tc=Duel.SelectMatchingCard(tp,c67831115.spfilter,tp,LOCATION_HAND,0,1,1,nil,e,tp):GetFirst()
+	if tc and Duel.SpecialSummon(tc,0,tp,tp,false,false,POS_DEFENSE)>0 and tc:IsFacedown() then
+		Duel.ConfirmCards(1-tp,tc)
 	end
 end
 function c67831115.cfilter(c,tp)
@@ -78,11 +68,13 @@ function c67831115.tgcon(e,tp,eg,ep,ev,re,r,rp)
 	else return false end
 end
 function c67831115.tgtg(e,tp,eg,ep,ev,re,r,rp,chk)
-	if chk==0 then return true end
-	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,e:GetLabelObject(),1,0,0)
+	local tc=e:GetLabelObject()
+	if chk==0 then return tc and tc:IsAbleToGrave() end
+	Duel.SetTargetCard(tc)
+	Duel.SetOperationInfo(0,CATEGORY_TOGRAVE,tc,1,0,0)
 end
 function c67831115.tgop(e,tp,eg,ep,ev,re,r,rp)
-	local tc=e:GetLabelObject()
+	local tc=Duel.GetFirstTarget()
 	if tc and tc:IsRelateToBattle() then
 		Duel.SendtoGrave(tc,REASON_EFFECT)
 	end

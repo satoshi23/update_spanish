@@ -6,7 +6,6 @@ function c58775978.initial_effect(c)
 	e1:SetType(EFFECT_TYPE_ACTIVATE)
 	e1:SetCode(EVENT_FREE_CHAIN)
 	e1:SetTarget(c58775978.target)
-	e1:SetOperation(c58775978.activate)
 	c:RegisterEffect(e1)
 	--cannot attack
 	local e2=Effect.CreateEffect(c)
@@ -23,8 +22,10 @@ function c58775978.initial_effect(c)
 end
 function c58775978.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:IsHasType(EFFECT_TYPE_ACTIVATE) end
+	local c=e:GetHandler()
+	c:SetTurnCounter(0)
 	--destroy
-	local e1=Effect.CreateEffect(e:GetHandler())
+	local e1=Effect.CreateEffect(c)
 	e1:SetType(EFFECT_TYPE_FIELD+EFFECT_TYPE_CONTINUOUS)
 	e1:SetProperty(EFFECT_FLAG_CANNOT_DISABLE)
 	e1:SetCode(EVENT_PHASE+PHASE_END)
@@ -33,12 +34,19 @@ function c58775978.target(e,tp,eg,ep,ev,re,r,rp,chk)
 	e1:SetCondition(c58775978.descon)
 	e1:SetOperation(c58775978.desop)
 	e1:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END+RESET_OPPO_TURN,2)
-	e:GetHandler():RegisterEffect(e1)
-	e:GetHandler():RegisterFlagEffect(1082946,RESET_PHASE+PHASE_END+RESET_OPPO_TURN,0,2)
-	c58775978[e:GetHandler()]=e1
+	c:RegisterEffect(e1)
+	local e3=Effect.CreateEffect(c)
+	e3:SetType(EFFECT_TYPE_SINGLE)
+	e3:SetProperty(EFFECT_FLAG_CANNOT_DISABLE+EFFECT_FLAG_UNCOPYABLE+EFFECT_FLAG_IGNORE_IMMUNE+EFFECT_FLAG_SET_AVAILABLE)
+	e3:SetCode(1082946)
+	e3:SetLabelObject(e1)
+	e3:SetOwnerPlayer(tp)
+	e3:SetOperation(c58775978.reset)
+	e3:SetReset(RESET_EVENT+0x1fe0000+RESET_PHASE+PHASE_END+RESET_OPPO_TURN,2)
+	c:RegisterEffect(e3)
 end
-function c58775978.activate(e,tp,eg,ep,ev,re,r,rp)
-	e:GetHandler():SetTurnCounter(0)
+function c58775978.reset(e,tp,eg,ep,ev,re,r,rp)
+	c58775978.desop(e:GetLabelObject(),tp,eg,ep,ev,e,r,rp)
 end
 function c58775978.descon(e,tp,eg,ep,ev,re,r,rp)
 	return tp~=Duel.GetTurnPlayer()
@@ -50,6 +58,6 @@ function c58775978.desop(e,tp,eg,ep,ev,re,r,rp)
 	c:SetTurnCounter(ct)
 	if ct==2 then
 		Duel.Destroy(c,REASON_RULE)
-		c:ResetFlagEffect(1082946)
+		if re and re.Reset then re:Reset() end
 	end
 end
