@@ -3,7 +3,7 @@
 --Script by nekrozar
 function c100200140.initial_effect(c)
 	--link summon
-	aux.AddLinkProcedure(c,aux.NOT(aux.FilterBoolFunction(Card.IsLinkType,TYPE_TOKEN)),2,99,c100200140.lcheck)
+	aux.AddLinkProcedure(c,aux.NOT(aux.FilterBoolFunctionEx(Card.IsType,TYPE_TOKEN)),2,99,c100200140.lcheck)
 	c:EnableReviveLimit()
 	--special summon
 	local e1=Effect.CreateEffect(c)
@@ -28,8 +28,8 @@ function c100200140.initial_effect(c)
 	e2:SetOperation(c100200140.spop2)
 	c:RegisterEffect(e2)
 end
-function c100200140.lcheck(g)
-	return g:GetClassCount(Card.GetRace)==1
+function c100200140.lcheck(g,lc,tp)
+	return g:GetClassCount(Card.GetRace,lc,SUMMON_TYPE_LINK,tp)==1
 end
 function c100200140.spcon1(e,tp,eg,ep,ev,re,r,rp)
 	return e:GetHandler():IsSummonType(SUMMON_TYPE_LINK)
